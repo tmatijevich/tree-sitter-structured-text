@@ -1,5 +1,5 @@
 module.exports = grammar({
-  name: 'StructuredText',
+  name: 'structured_text',
   
   extras : $ => [
     $.comment,

@@ -1,5 +1,5 @@
 {
-  "name": "StructuredText",
+  "name": "structured_text",
   "rules": {
     "source_file": {
       "type": "REPEAT",

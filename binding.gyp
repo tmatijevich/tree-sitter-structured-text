@@ -1,7 +1,7 @@
 {
   "targets": [
     {
-      "target_name": "tree_sitter_StructuredText_binding",
+      "target_name": "tree_sitter_structured_text_binding",
       "include_dirs": [
         "<!(node -e \"require('nan')\")",
         "src"
