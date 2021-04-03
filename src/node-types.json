@@ -54,11 +54,6 @@
     }
   },
   {
-    "type": "comment",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "dot_operator",
     "named": true,
     "fields": {},
@@ -160,11 +155,6 @@
         }
       ]
     }
-  },
-  {
-    "type": "number",
-    "named": true,
-    "fields": {}
   },
   {
     "type": "program_definition",
@@ -300,10 +290,6 @@
     "named": false
   },
   {
-    "type": "(*",
-    "named": false
-  },
-  {
     "type": ")",
     "named": false
   },
@@ -329,10 +315,6 @@
   },
   {
     "type": "/",
-    "named": false
-  },
-  {
-    "type": "//",
     "named": false
   },
   {
@@ -400,7 +382,19 @@
     "named": false
   },
   {
+    "type": "block_comment",
+    "named": true
+  },
+  {
     "type": "identifier",
+    "named": true
+  },
+  {
+    "type": "inline_comment",
+    "named": true
+  },
+  {
+    "type": "number",
     "named": true
   }
 ]

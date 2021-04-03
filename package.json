@@ -4,7 +4,8 @@
   "description": "IEC 61131-3 Structured Text tree-sitter language parser",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tree-sitter generate && node-gyp build"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,8 @@
     "nan": "^2.14.2"
   },
   "devDependencies": {
+    "electron": "^6.1.12",
+    "electron-rebuild": "^2.3.5",
     "tree-sitter-cli": "^0.17.3"
   }
 }

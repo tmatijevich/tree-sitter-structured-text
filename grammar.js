@@ -2,9 +2,12 @@ module.exports = grammar({
   name: 'structured_text',
   
   extras : $ => [
-    $.comment,
+    $.inline_comment,
+    $.block_comment,
     /\s/
   ],
+  
+  word: $ => $.identifier, // Fixes comments leading program definitions
   
   rules: {
     // Declarations, definitions, statements, expressions, types, and patterns.
@@ -113,31 +116,30 @@ module.exports = grammar({
     number: $ => {
       const decimal_literal = /\d+/ // Ignore underscores for now
       const floating_point_literal = seq(optional(decimal_literal), '.', decimal_literal)
-      return choice(
+      return token(choice(
         decimal_literal,
         floating_point_literal
       // binary
       // hexidecimal
       // float
       // scientific - Can an integer use scientific notation
-      )
+    ))
     },
     
     /*
-      Comments: Reviewed tree-sitter-javascript grammar.js
+      Comments: Reviewed tree-sitter-javascript\grammar.js and tree-sitter-c\grammar.js
     */
-    comment: $ => prec(1, choice(
-      seq('//', /.*/),
-      seq( // http://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890
-        '(*',
-        // 1. Match 0+ characters other than `*`, followed by 1+ literal `*`: `[^*]*\*+`
-        // 2. 0+ of:
-        // 2a. Not a `*` or `)`
-        // 2b. 0+ non-asterisk
-        // 2c. 1+ asterisk
-        /[^*]*\*+([^*)][^*]*\*+)*/,
-        ')'
-      )
+    inline_comment: $ => token(seq('//', /.*/)), // token fixes rust backtrace warning
+    
+    block_comment: $ => token(seq( // http://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890
+      '(*',
+      // 1. Match 0+ characters other than `*`, followed by 1+ literal `*`: `[^*]*\*+`
+      // 2. 0+ of:
+      // 2a. Not a `*` or `)`
+      // 2b. 0+ non-asterisk
+      // 2c. 1+ asterisk
+      /[^*]*\*+([^*)][^*]*\*+)*/,
+      ')'
     )),
     
     // Function, function block, or variable name
