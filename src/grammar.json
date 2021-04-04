@@ -52,6 +52,10 @@
         {
           "type": "SYMBOL",
           "name": "assignment"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "expression_statement"
         }
       ]
     },
@@ -75,6 +79,19 @@
             }
           ]
         },
+        {
+          "type": "SYMBOL",
+          "name": "_expression"
+        },
+        {
+          "type": "STRING",
+          "value": ";"
+        }
+      ]
+    },
+    "expression_statement": {
+      "type": "SEQ",
+      "members": [
         {
           "type": "SYMBOL",
           "name": "_expression"
@@ -582,41 +599,129 @@
       ]
     },
     "number": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "decimal"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "floating_point"
+        }
+      ]
+    },
+    "decimal": {
       "type": "TOKEN",
       "content": {
-        "type": "CHOICE",
+        "type": "SEQ",
         "members": [
           {
-            "type": "PATTERN",
-            "value": "\\d+"
-          },
-          {
-            "type": "SEQ",
+            "type": "CHOICE",
             "members": [
               {
-                "type": "CHOICE",
-                "members": [
-                  {
-                    "type": "PATTERN",
-                    "value": "\\d+"
-                  },
-                  {
-                    "type": "BLANK"
-                  }
-                ]
-              },
-              {
-                "type": "STRING",
-                "value": "."
-              },
-              {
                 "type": "PATTERN",
-                "value": "\\d+"
+                "value": "[\\+-]"
+              },
+              {
+                "type": "BLANK"
               }
             ]
+          },
+          {
+            "type": "PATTERN",
+            "value": "\\d"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "_"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "\\d"
+                }
+              ]
+            }
           }
         ]
       }
+    },
+    "floating_point": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "decimal"
+            },
+            {
+              "type": "STRING",
+              "value": "."
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": "_"
+                  },
+                  {
+                    "type": "PATTERN",
+                    "value": "\\d"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "PATTERN",
+                      "value": "[eE]"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "decimal"
+                    }
+                  ]
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "decimal"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[eE]"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "decimal"
+            }
+          ]
+        }
+      ]
     },
     "inline_comment": {
       "type": "TOKEN",

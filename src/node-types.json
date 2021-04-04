@@ -69,6 +69,48 @@
     }
   },
   {
+    "type": "expression_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "binary_expression",
+          "named": true
+        },
+        {
+          "type": "literal",
+          "named": true
+        },
+        {
+          "type": "unary_expression",
+          "named": true
+        },
+        {
+          "type": "variable",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "floating_point",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "decimal",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "index",
     "named": true,
     "fields": {},
@@ -157,6 +199,25 @@
     }
   },
   {
+    "type": "number",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "decimal",
+          "named": true
+        },
+        {
+          "type": "floating_point",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "program_definition",
     "named": true,
     "fields": {
@@ -207,6 +268,10 @@
       "types": [
         {
           "type": "assignment",
+          "named": true
+        },
+        {
+          "type": "expression_statement",
           "named": true
         }
       ]
@@ -382,7 +447,15 @@
     "named": false
   },
   {
+    "type": "_",
+    "named": false
+  },
+  {
     "type": "block_comment",
+    "named": true
+  },
+  {
+    "type": "decimal",
     "named": true
   },
   {
@@ -391,10 +464,6 @@
   },
   {
     "type": "inline_comment",
-    "named": true
-  },
-  {
-    "type": "number",
     "named": true
   }
 ]

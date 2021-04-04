@@ -1,7 +1,7 @@
 module.exports = grammar({
   name: 'structured_text',
   
-  extras : $ => [
+  extras: $ => [
     $.inline_comment,
     $.block_comment,
     /\s/
@@ -32,7 +32,7 @@ module.exports = grammar({
     
     statement: $ => choice(
       $.assignment,
-      // expression_statement
+      $.expression_statement,
       // control_statement
       // loop_statement
     ),
@@ -40,6 +40,11 @@ module.exports = grammar({
     assignment: $ => seq(
       $.variable,
       choice(':=', 'ACCESS'),
+      $._expression,
+      ';'
+    ),
+    
+    expression_statement: $ => seq(
       $._expression,
       ';'
     ),
@@ -113,18 +118,40 @@ module.exports = grammar({
       // time
     ),
     
-    number: $ => {
-      const decimal_literal = /\d+/ // Ignore underscores for now
-      const floating_point_literal = seq(optional(decimal_literal), '.', decimal_literal)
-      return token(choice(
-        decimal_literal,
-        floating_point_literal
+    number: $ => choice(
+      $.decimal,
+      $.floating_point // (including scientific notation)
       // binary
       // hexidecimal
-      // float
-      // scientific - Can an integer use scientific notation
-    ))
-    },
+      // time
+      // date
+    ),
+    
+    decimal: $ => token(seq(
+      optional(/[\+-]/),
+      /\d/,
+      repeat(choice(
+        '_',
+        /\d/
+      ))
+    )),
+    
+    floating_point: $ => choice( // Distinquished by a decimal and/or scientific notation
+      seq(
+        $.decimal,
+        '.',
+        repeat(choice('_', /\d/)),
+        optional(seq(
+          /[eE]/,
+          $.decimal
+        ))
+      ),
+      seq(
+        $.decimal,
+        /[eE]/,
+        $.decimal
+      )
+    ),
     
     /*
       Comments: Reviewed tree-sitter-javascript\grammar.js and tree-sitter-c\grammar.js
