@@ -30,11 +30,26 @@ module.exports = grammar({
       'END_PROGRAM'
     ),
     
+    /*
+      Statments: 
+    */
     statement: $ => choice(
       $.assignment,
       $.expression_statement,
-      // control_statement
+      $._control_statement,
       // loop_statement
+    ),
+    
+    _control_statement: $ => choice(
+      $.if_statement
+    ),
+    
+    if_statement: $ => seq(
+      'IF',
+      field('Condition', $._expression),
+      'THEN',
+      repeat($.statement), // More IFs or assignments
+      'END_IF'
     ),
     
     assignment: $ => seq(
@@ -45,7 +60,7 @@ module.exports = grammar({
     ),
     
     expression_statement: $ => seq(
-      $._expression,
+      $._expression, // This can only be a variable of a function block call, not a literal
       ';'
     ),
     

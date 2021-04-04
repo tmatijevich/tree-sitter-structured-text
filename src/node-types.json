@@ -96,6 +96,52 @@
     }
   },
   {
+    "type": "if_statement",
+    "named": true,
+    "fields": {
+      "Condition": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
+            "type": "number",
+            "named": true
+          },
+          {
+            "type": "unary_expression",
+            "named": true
+          },
+          {
+            "type": "variable",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "statement",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "index",
     "named": true,
     "fields": {},
@@ -223,6 +269,10 @@
         },
         {
           "type": "expression_statement",
+          "named": true
+        },
+        {
+          "type": "if_statement",
           "named": true
         }
       ]
@@ -374,7 +424,15 @@
     "named": false
   },
   {
+    "type": "END_IF",
+    "named": false
+  },
+  {
     "type": "END_PROGRAM",
+    "named": false
+  },
+  {
+    "type": "IF",
     "named": false
   },
   {
@@ -383,6 +441,10 @@
   },
   {
     "type": "PROGRAM",
+    "named": false
+  },
+  {
+    "type": "THEN",
     "named": false
   },
   {
