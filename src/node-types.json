@@ -12,7 +12,7 @@
           "named": true
         },
         {
-          "type": "literal",
+          "type": "number",
           "named": true
         },
         {
@@ -39,7 +39,7 @@
           "named": true
         },
         {
-          "type": "literal",
+          "type": "number",
           "named": true
         },
         {
@@ -81,7 +81,7 @@
           "named": true
         },
         {
-          "type": "literal",
+          "type": "number",
           "named": true
         },
         {
@@ -90,21 +90,6 @@
         },
         {
           "type": "variable",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "floating_point",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "decimal",
           "named": true
         }
       ]
@@ -123,7 +108,7 @@
           "named": true
         },
         {
-          "type": "literal",
+          "type": "number",
           "named": true
         },
         {
@@ -132,21 +117,6 @@
         },
         {
           "type": "variable",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "literal",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "number",
           "named": true
         }
       ]
@@ -193,25 +163,6 @@
       "types": [
         {
           "type": "dot_operator",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "number",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "decimal",
-          "named": true
-        },
-        {
-          "type": "floating_point",
           "named": true
         }
       ]
@@ -290,7 +241,7 @@
           "named": true
         },
         {
-          "type": "literal",
+          "type": "number",
           "named": true
         },
         {
@@ -447,15 +398,7 @@
     "named": false
   },
   {
-    "type": "_",
-    "named": false
-  },
-  {
     "type": "block_comment",
-    "named": true
-  },
-  {
-    "type": "decimal",
     "named": true
   },
   {
@@ -464,6 +407,10 @@
   },
   {
     "type": "inline_comment",
+    "named": true
+  },
+  {
+    "type": "number",
     "named": true
   }
 ]

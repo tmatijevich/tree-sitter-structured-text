@@ -53,7 +53,7 @@ module.exports = grammar({
       Expressions
     */
     _expression: $ => choice(
-      $.literal,
+      $._literal,
       $.variable, // variable
       // literal
       seq('(', $._expression, ')'),// parenthises (expression)
@@ -112,46 +112,29 @@ module.exports = grammar({
     /*
       Literals
     */
-    literal: $ => choice(
+    _literal: $ => choice(
       $.number,
       // string
       // time
     ),
     
-    number: $ => choice(
-      $.decimal,
-      $.floating_point // (including scientific notation)
-      // binary
-      // hexidecimal
-      // time
-      // date
-    ),
-    
-    decimal: $ => token(seq(
-      optional(/[\+-]/),
-      /\d/,
-      repeat(choice(
-        '_',
-        /\d/
-      ))
-    )),
-    
-    floating_point: $ => choice( // Distinquished by a decimal and/or scientific notation
-      seq(
-        $.decimal,
-        '.',
-        repeat(choice('_', /\d/)),
-        optional(seq(
-          /[eE]/,
-          $.decimal
-        ))
-      ),
-      seq(
-        $.decimal,
-        /[eE]/,
-        $.decimal
-      )
-    ),
+    number: $ => {
+      const decimal = seq(
+        optional(/[\+-]/),
+        /\d/,
+        repeat(choice('_', /\d/))
+      );
+      const floating_point = choice(
+        seq(
+          decimal, 
+          '.',
+          repeat(choice('_', /\d/)),
+          optional(seq(/[eE]/, decimal))
+        ),
+        seq(decimal, /[eE]/, decimal)
+      );
+      return token(choice(decimal, floating_point));
+    },
     
     /*
       Comments: Reviewed tree-sitter-javascript\grammar.js and tree-sitter-c\grammar.js
