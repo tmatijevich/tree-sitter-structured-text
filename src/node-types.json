@@ -54,6 +54,52 @@
     }
   },
   {
+    "type": "case_statement",
+    "named": true,
+    "fields": {
+      "CaseControlValue": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
+            "type": "number",
+            "named": true
+          },
+          {
+            "type": "unary_expression",
+            "named": true
+          },
+          {
+            "type": "variable",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "statement",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "dot_operator",
     "named": true,
     "fields": {},
@@ -298,6 +344,10 @@
           "named": true
         },
         {
+          "type": "case_statement",
+          "named": true
+        },
+        {
           "type": "expression_statement",
           "named": true
         },
@@ -402,6 +452,10 @@
     "named": false
   },
   {
+    "type": ",",
+    "named": false
+  },
+  {
     "type": "-",
     "named": false
   },
@@ -410,7 +464,15 @@
     "named": false
   },
   {
+    "type": "..",
+    "named": false
+  },
+  {
     "type": "/",
+    "named": false
+  },
+  {
+    "type": ":",
     "named": false
   },
   {
@@ -454,11 +516,19 @@
     "named": false
   },
   {
+    "type": "CASE",
+    "named": false
+  },
+  {
     "type": "ELSE",
     "named": false
   },
   {
     "type": "ELSIF",
+    "named": false
+  },
+  {
+    "type": "END_CASE",
     "named": false
   },
   {
@@ -471,6 +541,10 @@
   },
   {
     "type": "IF",
+    "named": false
+  },
+  {
+    "type": "OF",
     "named": false
   },
   {

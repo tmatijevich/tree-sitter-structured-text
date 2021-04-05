@@ -41,7 +41,8 @@ module.exports = grammar({
     ),
     
     _control_statement: $ => choice(
-      $.if_statement
+      $.if_statement,
+      $.case_statement
     ),
     
     if_statement: $ => seq(
@@ -59,8 +60,38 @@ module.exports = grammar({
         'ELSE',
         repeat($.statement)
       )),
-      'END_IF'
+      'END_IF',
+      optional(';')
     ),
+    
+    case_statement: $ => {
+      const decimal = token(seq(
+        optional(/[\+-]/),
+        /\d/,
+        repeat(choice('_', /\d/))
+      ));
+      const range = seq(decimal, '..', decimal);
+      const caseValue = seq(
+        choice(decimal, range), // How do I add identifier here?
+        repeat(seq(',', choice(decimal, range)))
+      );
+      return seq(
+        'CASE',
+        field('CaseControlValue', $._expression),
+        'OF',
+        repeat(seq(
+          caseValue,
+          ':',
+          repeat($.statement)
+        )),
+        optional(seq(
+          'ELSE',
+          repeat($.statement)
+        )),
+        'END_CASE',
+        optional(';')
+      );
+    },
     
     assignment: $ => seq(
       $.variable,
