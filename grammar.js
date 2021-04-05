@@ -49,6 +49,16 @@ module.exports = grammar({
       field('Condition', $._expression),
       'THEN',
       repeat($.statement), // More IFs or assignments
+      repeat(seq(
+        'ELSIF',
+        field('ElsifCondition', $._expression),
+        'THEN',
+        repeat($.statement)
+      )),
+      optional(seq(
+        'ELSE',
+        repeat($.statement)
+      )),
       'END_IF'
     ),
     
