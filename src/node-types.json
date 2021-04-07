@@ -1,5 +1,39 @@
 [
   {
+    "type": "_control_statement",
+    "named": true,
+    "subtypes": [
+      {
+        "type": "case_statement",
+        "named": true
+      }
+    ]
+  },
+  {
+    "type": "_definition",
+    "named": true,
+    "subtypes": [
+      {
+        "type": "program_definition",
+        "named": true
+      }
+    ]
+  },
+  {
+    "type": "statement",
+    "named": true,
+    "subtypes": [
+      {
+        "type": "_control_statement",
+        "named": true
+      },
+      {
+        "type": "assignment",
+        "named": true
+      }
+    ]
+  },
+  {
     "type": "assignment",
     "named": true,
     "fields": {},
@@ -54,6 +88,40 @@
     }
   },
   {
+    "type": "case_body",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "case_value",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "case_else_clause",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "statement",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "case_statement",
     "named": true,
     "fields": {
@@ -93,125 +161,26 @@
       "required": false,
       "types": [
         {
-          "type": "statement",
+          "type": "case_body",
+          "named": true
+        },
+        {
+          "type": "case_else_clause",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "dot_operator",
+    "type": "case_value",
     "named": true,
     "fields": {},
-    "children": {
-      "multiple": false,
-      "required": false,
-      "types": [
-        {
-          "type": "member",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "expression_statement",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "binary_expression",
-          "named": true
-        },
-        {
-          "type": "number",
-          "named": true
-        },
-        {
-          "type": "unary_expression",
-          "named": true
-        },
-        {
-          "type": "variable",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "if_statement",
-    "named": true,
-    "fields": {
-      "Condition": {
-        "multiple": true,
-        "required": true,
-        "types": [
-          {
-            "type": "(",
-            "named": false
-          },
-          {
-            "type": ")",
-            "named": false
-          },
-          {
-            "type": "binary_expression",
-            "named": true
-          },
-          {
-            "type": "number",
-            "named": true
-          },
-          {
-            "type": "unary_expression",
-            "named": true
-          },
-          {
-            "type": "variable",
-            "named": true
-          }
-        ]
-      },
-      "ElsifCondition": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": "(",
-            "named": false
-          },
-          {
-            "type": ")",
-            "named": false
-          },
-          {
-            "type": "binary_expression",
-            "named": true
-          },
-          {
-            "type": "number",
-            "named": true
-          },
-          {
-            "type": "unary_expression",
-            "named": true
-          },
-          {
-            "type": "variable",
-            "named": true
-          }
-        ]
-      }
-    },
     "children": {
       "multiple": true,
       "required": false,
       "types": [
         {
-          "type": "statement",
+          "type": "identifier",
           "named": true
         }
       ]
@@ -248,26 +217,6 @@
     "type": "member",
     "named": true,
     "fields": {
-      "dim1": {
-        "multiple": false,
-        "required": false,
-        "types": [
-          {
-            "type": "index",
-            "named": true
-          }
-        ]
-      },
-      "dim2": {
-        "multiple": false,
-        "required": false,
-        "types": [
-          {
-            "type": "index",
-            "named": true
-          }
-        ]
-      },
       "name": {
         "multiple": false,
         "required": true,
@@ -278,16 +227,6 @@
           }
         ]
       }
-    },
-    "children": {
-      "multiple": false,
-      "required": false,
-      "types": [
-        {
-          "type": "dot_operator",
-          "named": true
-        }
-      ]
     }
   },
   {
@@ -325,34 +264,7 @@
       "required": false,
       "types": [
         {
-          "type": "program_definition",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "statement",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "assignment",
-          "named": true
-        },
-        {
-          "type": "case_statement",
-          "named": true
-        },
-        {
-          "type": "expression_statement",
-          "named": true
-        },
-        {
-          "type": "if_statement",
+          "type": "_definition",
           "named": true
         }
       ]
@@ -389,26 +301,6 @@
     "type": "variable",
     "named": true,
     "fields": {
-      "dim1": {
-        "multiple": false,
-        "required": false,
-        "types": [
-          {
-            "type": "index",
-            "named": true
-          }
-        ]
-      },
-      "dim2": {
-        "multiple": false,
-        "required": false,
-        "types": [
-          {
-            "type": "index",
-            "named": true
-          }
-        ]
-      },
       "name": {
         "multiple": false,
         "required": true,
@@ -419,16 +311,6 @@
           }
         ]
       }
-    },
-    "children": {
-      "multiple": false,
-      "required": false,
-      "types": [
-        {
-          "type": "dot_operator",
-          "named": true
-        }
-      ]
     }
   },
   {
@@ -464,19 +346,11 @@
     "named": false
   },
   {
-    "type": "..",
-    "named": false
-  },
-  {
     "type": "/",
     "named": false
   },
   {
     "type": ":",
-    "named": false
-  },
-  {
-    "type": ":=",
     "named": false
   },
   {

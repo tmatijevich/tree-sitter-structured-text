@@ -7,6 +7,13 @@ module.exports = grammar({
     /\s/
   ],
   
+  supertypes: $ => [
+    $._definition, 
+    $.statement,
+    $._control_statement,
+    // $._expression (need to remove the parenthesis_expression)
+  ],
+  
   word: $ => $.identifier, // Fixes comments leading program definitions
   
   rules: {
@@ -31,17 +38,17 @@ module.exports = grammar({
     ),
     
     /*
-      Statments: 
+      Statements
     */
     statement: $ => choice(
       $.assignment,
-      $.expression_statement,
+      //$.expression_statement,
       $._control_statement,
       // loop_statement
     ),
     
     _control_statement: $ => choice(
-      $.if_statement,
+      //$.if_statement,
       $.case_statement
     ),
     
@@ -64,51 +71,89 @@ module.exports = grammar({
       optional(';')
     ),
     
-    case_statement: $ => {
+    // case_statement: $ => {
+    //   return seq(
+    //     'CASE',
+    //     field('CaseControlValue', $._expression),
+    //     'OF',
+    //     repeat(seq(
+    //       $.case_value,
+    //       field('CaseValueStatement', prec.right(2, repeat($.statement)))
+    //     )),
+    //     optional(seq(
+    //       'ELSE',
+    //       field('ElseStatement', repeat($.statement))
+    //     )),
+    //     'END_CASE',
+    //     optional(';')
+    //   );
+    // },
+    
+    case_statement: $ => seq(
+      'CASE',
+      field('CaseControlValue', $._expression),
+      'OF',
+      optional($.case_body),
+      optional($.case_else_clause),
+      'END_CASE',
+      optional(';')
+    ),
+    
+    // case_value: $ => {
+    //   const decimal = seq(
+    //     optional(/[\+-]/),
+    //     /\d/,
+    //     repeat(choice('_', /\d/))
+    //   );
+    //   const range = seq(decimal, '..', decimal);
+    //   return seq(
+    //     choice(decimal, range, $.identifier),
+    //     repeat(seq(',', choice(decimal, range, $.identifier))),
+    //     ':'
+    //   );
+    // },
+    
+    assignment: $ => seq(
+      $.variable,
+      choice('=', 'ACCESS'),
+      $._expression,
+      ';'
+    ),
+    
+    // expression_statement: $ => seq(
+    //   $._expression, // This can only be a variable of a function block call, not a literal
+    //   ';'
+    // ),
+    
+    /*
+      Statement components
+    */
+    
+    case_body: $ => repeat1(prec.right(seq(
+      $.case_value,
+      ':',
+      repeat(prec.right(2, $.identifier))
+    ))),
+    
+    case_else_clause: $ => seq(
+      'ELSE',
+      repeat($.statement)
+    ),
+    
+    case_value: $ => {
       const decimal = token(seq(
         optional(/[\+-]/),
         /\d/,
         repeat(choice('_', /\d/))
       ));
-      const range = seq(decimal, '..', decimal);
-      const caseValue = seq(
-        choice(decimal, range), // How do I add identifier here?
-        repeat(seq(',', choice(decimal, range)))
-      );
-      return seq(
-        'CASE',
-        field('CaseControlValue', $._expression),
-        'OF',
-        repeat(seq(
-          caseValue,
-          ':',
-          repeat($.statement)
-        )),
-        optional(seq(
-          'ELSE',
-          repeat($.statement)
-        )),
-        'END_CASE',
-        optional(';')
-      );
+      const range = token(seq(decimal, '..', decimal));
+      return prec.right(1, commaSep1(choice(decimal, range, $.identifier)));
     },
-    
-    assignment: $ => seq(
-      $.variable,
-      choice(':=', 'ACCESS'),
-      $._expression,
-      ';'
-    ),
-    
-    expression_statement: $ => seq(
-      $._expression, // This can only be a variable of a function block call, not a literal
-      ';'
-    ),
     
     /*
       Expressions
     */
-    _expression: $ => choice(
+    _expression: $ => prec.right(choice(
       $._literal,
       $.variable, // variable
       // literal
@@ -116,7 +161,7 @@ module.exports = grammar({
       // function call
       $.unary_expression,// unary expression
       $.binary_expression// binary expression
-    ),
+    )),
     
     unary_expression: $ => prec(6, choice(
       seq(/NOT\s+/, $._expression),
@@ -146,8 +191,8 @@ module.exports = grammar({
     
     variable: $ => seq(
       field('name', $.identifier),
-      optional($._index_array),
-      optional($.dot_operator)
+      //optional($._index_array),
+      //optional($.dot_operator)
     ),
     
     _index_array: $ => seq(
@@ -209,7 +254,15 @@ module.exports = grammar({
     )),
     
     // Function, function block, or variable name
-    identifier: $ => /[a-zA-Z_]\w*/ // Non-digit character followed by any character
+    identifier: $ => token(/[a-zA-Z_]\w*/) // Non-digit character followed by any character
   },
   
 });
+
+function commaSep1(rule) {
+  return seq(rule, repeat(seq(',', rule)));
+}
+
+function commaSep(rule) {
+  return optional(commaSep1(rule));
+}
