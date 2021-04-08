@@ -1,0 +1,8 @@
+Var1 := 25;
+
+CASE State OF
+
+	0: 
+		x := 5;
+		
+END_CASE
