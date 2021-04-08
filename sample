@@ -4,5 +4,10 @@ CASE State OF
 
 	0: 
 		x := 5;
+		y := 5;
+		
+	1:
+		z := 6;
+		Var1 := 100;
 		
 END_CASE

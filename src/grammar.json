@@ -1,5 +1,6 @@
 {
   "name": "structured_text",
+  "word": "identifier",
   "rules": {
     "source_file": {
       "type": "REPEAT",
@@ -78,32 +79,24 @@
       ]
     },
     "case": {
-      "type": "PREC_RIGHT",
-      "value": 1,
-      "content": {
-        "type": "SEQ",
-        "members": [
-          {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "case_value"
+        },
+        {
+          "type": "STRING",
+          "value": ":"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
             "type": "SYMBOL",
-            "name": "case_value"
-          },
-          {
-            "type": "STRING",
-            "value": ":"
-          },
-          {
-            "type": "REPEAT",
-            "content": {
-              "type": "PREC_RIGHT",
-              "value": 2,
-              "content": {
-                "type": "SYMBOL",
-                "name": "statement"
-              }
-            }
+            "name": "statement"
           }
-        ]
-      }
+        }
+      ]
     },
     "else_case": {
       "type": "SEQ",
@@ -122,34 +115,37 @@
       ]
     },
     "case_value": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "number"
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "number"
-            },
-            {
-              "type": "STRING",
-              "value": ".."
-            },
-            {
-              "type": "SYMBOL",
-              "name": "number"
-            }
-          ]
-        },
-        {
-          "type": "SYMBOL",
-          "name": "identifier"
-        }
-      ]
+      "type": "TOKEN",
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "PATTERN",
+            "value": "\\d+"
+          },
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "PATTERN",
+                "value": "\\d+"
+              },
+              {
+                "type": "STRING",
+                "value": ".."
+              },
+              {
+                "type": "PATTERN",
+                "value": "\\d+"
+              }
+            ]
+          },
+          {
+            "type": "PATTERN",
+            "value": "[a-zA-Z_]\\w+"
+          }
+        ]
+      }
     },
     "assignment": {
       "type": "SEQ",

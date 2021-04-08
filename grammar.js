@@ -1,6 +1,8 @@
 module.exports = grammar({
 	name: 'structured_text',
 	
+	word: $ => $.identifier,
+	
 	rules: {
 		source_file: $ => repeat($.statement),
 		
@@ -19,11 +21,11 @@ module.exports = grammar({
 			optional(';')
 		),
 		
-		case: $ => prec.right(1, seq(
+		case: $ => seq(
 			$.case_value,
 			':',
-			repeat(prec.right(2, $.statement))
-		)),
+			repeat($.statement)
+		),
 		
 		else_case: $ => seq(
 			'ELSE',
@@ -31,8 +33,10 @@ module.exports = grammar({
 		),
 		
 		case_value: $ => {
-			const range = seq($.number, '..', $.number);
-			return choice($.number, range, $.identifier);
+			const num = /\d+/;
+			const range = seq(num, '..', num);
+			const varConst = /[a-zA-Z_]\w+/;
+			return token(choice(num, range, varConst));
 		},
 		
 		assignment: $ => seq(
