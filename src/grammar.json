@@ -86,10 +86,6 @@
           "name": "case_value"
         },
         {
-          "type": "STRING",
-          "value": ":"
-        },
-        {
           "type": "REPEAT",
           "content": {
             "type": "SYMBOL",
@@ -117,32 +113,41 @@
     "case_value": {
       "type": "TOKEN",
       "content": {
-        "type": "CHOICE",
+        "type": "SEQ",
         "members": [
           {
-            "type": "PATTERN",
-            "value": "\\d+"
-          },
-          {
-            "type": "SEQ",
+            "type": "CHOICE",
             "members": [
               {
                 "type": "PATTERN",
                 "value": "\\d+"
               },
               {
-                "type": "STRING",
-                "value": ".."
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "PATTERN",
+                    "value": "\\d+"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": ".."
+                  },
+                  {
+                    "type": "PATTERN",
+                    "value": "\\d+"
+                  }
+                ]
               },
               {
                 "type": "PATTERN",
-                "value": "\\d+"
+                "value": "[a-zA-Z_]\\w+"
               }
             ]
           },
           {
-            "type": "PATTERN",
-            "value": "[a-zA-Z_]\\w+"
+            "type": "STRING",
+            "value": ":"
           }
         ]
       }

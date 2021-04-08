@@ -10,4 +10,9 @@ CASE State OF
 		z := 6;
 		Var1 := 100;
 		
+	Case3:
+	
+	ELSE
+		Test := 6458;
+		
 END_CASE

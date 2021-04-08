@@ -23,7 +23,6 @@ module.exports = grammar({
 		
 		case: $ => seq(
 			$.case_value,
-			':',
 			repeat($.statement)
 		),
 		
@@ -36,7 +35,7 @@ module.exports = grammar({
 			const num = /\d+/;
 			const range = seq(num, '..', num);
 			const varConst = /[a-zA-Z_]\w+/;
-			return token(choice(num, range, varConst));
+			return token(seq(choice(num, range, varConst), ':'));
 		},
 		
 		assignment: $ => seq(
