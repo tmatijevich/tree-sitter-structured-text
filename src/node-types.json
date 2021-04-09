@@ -8,7 +8,7 @@
       "required": true,
       "types": [
         {
-          "type": "identifier",
+          "type": "lhs_expression",
           "named": true
         },
         {
@@ -117,10 +117,6 @@
     }
   },
   {
-    "type": ":=",
-    "named": false
-  },
-  {
     "type": ";",
     "named": false
   },
@@ -146,6 +142,10 @@
   },
   {
     "type": "identifier",
+    "named": true
+  },
+  {
+    "type": "lhs_expression",
     "named": true
   },
   {

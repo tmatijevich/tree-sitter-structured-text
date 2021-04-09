@@ -34,16 +34,20 @@ module.exports = grammar({
 		case_value: $ => {
 			const num = /\d+/;
 			const range = seq(num, '..', num);
-			const varConst = /[a-zA-Z_]\w+/;
-			return token(seq(choice(num, range, varConst), ':'));
+			const varConst = /[a-zA-Z_]\w*/;
+			return token(seq(choice(num, range, varConst), /\s*:/));
 		},
 		
 		assignment: $ => seq(
-			$.identifier,
-			':=',
+			$.lhs_expression,
 			$.number,
 			';'
 		),
+		
+		lhs_expression: $ => {
+			const varName = /[a-zA-Z_]\w*/;
+			return token(seq(varName, /\s*:=/));
+		},
 		
 		identifier: $ => token(/[a-zA-Z_]\w*/),
 		

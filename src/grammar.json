@@ -141,13 +141,13 @@
               },
               {
                 "type": "PATTERN",
-                "value": "[a-zA-Z_]\\w+"
+                "value": "[a-zA-Z_]\\w*"
               }
             ]
           },
           {
-            "type": "STRING",
-            "value": ":"
+            "type": "PATTERN",
+            "value": "\\s*:"
           }
         ]
       }
@@ -157,11 +157,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "identifier"
-        },
-        {
-          "type": "STRING",
-          "value": ":="
+          "name": "lhs_expression"
         },
         {
           "type": "SYMBOL",
@@ -172,6 +168,22 @@
           "value": ";"
         }
       ]
+    },
+    "lhs_expression": {
+      "type": "TOKEN",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "PATTERN",
+            "value": "[a-zA-Z_]\\w*"
+          },
+          {
+            "type": "PATTERN",
+            "value": "\\s*:="
+          }
+        ]
+      }
     },
     "identifier": {
       "type": "TOKEN",

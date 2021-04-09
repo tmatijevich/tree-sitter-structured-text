@@ -6,7 +6,7 @@ CASE State OF
 		x := 5;
 		y := 5;
 		
-	1:
+	1 :
 		z := 6;
 		Var1 := 100;
 		
