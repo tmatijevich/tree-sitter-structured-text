@@ -61,6 +61,10 @@
         {
           "type": "SYMBOL",
           "name": "_control_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_loop_statement"
         }
       ]
     },
@@ -74,6 +78,15 @@
         {
           "type": "SYMBOL",
           "name": "if_statement"
+        }
+      ]
+    },
+    "_loop_statement": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "for_statement"
         }
       ]
     },
@@ -217,6 +230,46 @@
         }
       ]
     },
+    "for_statement": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "FOR"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "for_range"
+        },
+        {
+          "type": "STRING",
+          "value": "DO"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "statement"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "END_FOR"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": ";"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
+    },
     "elseif_clause": {
       "type": "SEQ",
       "members": [
@@ -339,12 +392,50 @@
         }
       ]
     },
+    "for_range": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "expression_assignment"
+        },
+        {
+          "type": "STRING",
+          "value": "TO"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_expression"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "BY"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "_expression"
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
+    },
     "_expression": {
       "type": "CHOICE",
       "members": [
         {
           "type": "SYMBOL",
-          "name": "literal"
+          "name": "_literal"
         },
         {
           "type": "SYMBOL",
@@ -352,7 +443,24 @@
         }
       ]
     },
-    "literal": {
+    "expression_assignment": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "identifier"
+        },
+        {
+          "type": "STRING",
+          "value": ":="
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_expression"
+        }
+      ]
+    },
+    "_literal": {
       "type": "CHOICE",
       "members": [
         {
@@ -361,22 +469,66 @@
         }
       ]
     },
-    "identifier": {
-      "type": "TOKEN",
-      "content": {
-        "type": "PATTERN",
-        "value": "[a-zA-Z_]\\w*"
-      }
-    },
     "number": {
       "type": "TOKEN",
       "content": {
         "type": "PATTERN",
         "value": "\\d+"
       }
+    },
+    "inline_comment": {
+      "type": "TOKEN",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "//"
+          },
+          {
+            "type": "PATTERN",
+            "value": ".*"
+          }
+        ]
+      }
+    },
+    "block_comment": {
+      "type": "TOKEN",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "(*"
+          },
+          {
+            "type": "PATTERN",
+            "value": "[^*]*\\*+([^*)][^*]*\\*+)*"
+          },
+          {
+            "type": "STRING",
+            "value": ")"
+          }
+        ]
+      }
+    },
+    "identifier": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PATTERN",
+        "value": "[a-zA-Z_]\\w*"
+      }
     }
   },
   "extras": [
+    {
+      "type": "SYMBOL",
+      "name": "inline_comment"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "block_comment"
+    },
     {
       "type": "PATTERN",
       "value": "\\s"
@@ -393,7 +545,9 @@
     "_definition",
     "statement",
     "_control_statement",
-    "_expression"
+    "_loop_statement",
+    "_expression",
+    "_literal"
   ]
 }
 

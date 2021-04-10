@@ -5,7 +5,7 @@ Var1 := 25;
 
 CASE State OF
 
-	STATE1 :
+	(*STATE1 :
 	
 		Var1 := 100;
 		x := 5;
@@ -33,10 +33,14 @@ CASE State OF
 		
 		END_IF
 	
-	3:
+	3:*)
 	
 	4..5:
 		
 END_CASE
+
+FOR i := 1 TO 7 DO
+
+END_FOR
 
 END_PROGRAM
