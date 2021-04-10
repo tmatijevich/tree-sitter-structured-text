@@ -1,3 +1,6 @@
+
+PROGRAM Main
+
 Var1 := 25;
 
 CASE State OF
@@ -15,7 +18,25 @@ CASE State OF
 		x2 := 55;
 		
 	2:
+		IF Ready THEN
+			Var2 := 11;
+		
+		ELSIF Standby THEN
+			Var2 := 12;
+			
+		ELSE
+			CASE State2 OF
+				0:
+				1:
+				2:
+			END_CASE
+		
+		END_IF
 	
 	3:
+	
+	4..5:
 		
 END_CASE
+
+END_PROGRAM
