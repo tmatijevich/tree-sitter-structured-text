@@ -18,7 +18,7 @@ module.exports = grammar({
     $.statement,
     $._control_statement,
     $._loop_statement,
-    $._expression,
+    // $._expression,
     $._literal,
   ],
   
@@ -63,9 +63,9 @@ module.exports = grammar({
     ),
     
     assignment: $ => seq(
-      $.identifier,
+      $.variable,
       ':=',
-      $.number,
+      $._expression,
       ';'
     ),
     
@@ -147,21 +147,66 @@ module.exports = grammar({
     
     _expression: $ => choice(
       $._literal,
-      $.identifier, // (variable)
-      // parenthises expression
-      // unary expression
-      // binary expression
+      $.variable,
+      $._parenthesis_expression,
+      $.unary_expression,
+      $.binary_expression
     ),
     
     expression_assignment: $ => seq(
-      $.identifier,
+      $.variable,
       ':=',
       $._expression
+    ),
+    
+    _parenthesis_expression: $ => seq('(', $._expression, ')'),
+    
+    unary_expression: $ => prec(6, choice(
+      seq('NOT', $._expression),
+      seq('-', $._expression)
+    )),
+    
+    binary_expression: $ => choice(
+      prec.left(5, seq($._expression, '**', $._expression)),
+      prec.left(4, seq($._expression, '*', $._expression)),
+      prec.left(4, seq($._expression, '/', $._expression)),
+      prec.left(3, seq($._expression, '+', $._expression)),
+      prec.left(3, seq($._expression, '-', $._expression)),
+      prec.left(2, seq($._expression, '<', $._expression)),
+      prec.left(2, seq($._expression, '>', $._expression)),
+      prec.left(2, seq($._expression, '<=', $._expression)),
+      prec.left(2, seq($._expression, '>=', $._expression)),
+      prec.left(1, seq($._expression, '=', $._expression)),
+      prec.left(1, seq($._expression, '<>', $._expression)),
+      prec.left(0, seq($._expression, 'AND', $._expression)),
+      prec.left(0, seq($._expression, 'XOR', $._expression)),
+      prec.left(0, seq($._expression, 'OR', $._expression))
     ),
     
     /*
       Variables
     */
+    
+    variable: $ => seq(
+      field('Name', $.identifier),
+      optional($.index),
+      optional($.structure_member)
+    ),
+    
+    index: $ => seq(
+      '[',
+      field('Dim1', $._expression),
+      optional(seq(',', field('Dim2', $._expression))),
+      ']'
+    ),
+    
+    structure_member: $ => seq(
+      token.immediate('.'),
+      choice(
+        $.variable,
+        /\d{1,2}/ // bit masking up to 32
+      )
+    ),
     
     /*
       Literals
@@ -173,7 +218,7 @@ module.exports = grammar({
       // time or date
     ),
     
-    number: $ => token(/\d+/),
+    number: $ => /\d+/,
     
     /*
       Comments: Reviewed tree-sitter-javascript\grammar.js and tree-sitter-c\grammar.js
@@ -191,7 +236,7 @@ module.exports = grammar({
       ')'
     )),
     
-    identifier: $ => token(/[a-zA-Z_]\w*/),
+    identifier: $ => /[a-zA-Z_]\w*/,
     
   }
   
