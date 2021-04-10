@@ -3,6 +3,10 @@ module.exports = grammar({
 	
 	word: $ => $.identifier,
 	
+	conflicts: $ => [
+		[$.case]
+	],
+	
 	rules: {
 		source_file: $ => repeat($.statement),
 		
@@ -23,6 +27,7 @@ module.exports = grammar({
 		
 		case: $ => seq(
 			$.case_value,
+			':',
 			repeat($.statement)
 		),
 		
@@ -31,12 +36,13 @@ module.exports = grammar({
 			repeat($.statement)
 		),
 		
-		case_value: $ => {
-			const num = /\d+/;
-			const range = seq(num, '..', num);
-			const varConst = /[a-zA-Z_]\w*/;
-			return token(seq(choice(num, range, varConst), ':'));
-		},
+		case_value: $ => choice($.number, $.case_range, $.identifier),
+		
+		case_range: $ => seq(
+			field('lower', $.number),
+			'..',
+			field('upper', $.number)
+		),
 		
 		assignment: $ => seq(
 			$.identifier,
