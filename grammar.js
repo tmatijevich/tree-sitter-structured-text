@@ -35,19 +35,15 @@ module.exports = grammar({
 			const num = /\d+/;
 			const range = seq(num, '..', num);
 			const varConst = /[a-zA-Z_]\w*/;
-			return token(seq(choice(num, range, varConst), /\s*:/));
+			return token(seq(choice(num, range, varConst), ':'));
 		},
 		
 		assignment: $ => seq(
-			$.lhs_expression,
+			$.identifier,
+			':=',
 			$.number,
 			';'
 		),
-		
-		lhs_expression: $ => {
-			const varName = /[a-zA-Z_]\w*/;
-			return token(seq(varName, /\s*:=/));
-		},
 		
 		identifier: $ => token(/[a-zA-Z_]\w*/),
 		
