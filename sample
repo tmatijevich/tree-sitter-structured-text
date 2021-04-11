@@ -1,18 +1,26 @@
-ACTION PalletCam: 
+PROGRAM _INIT
 
-	// Define conversion between roller radial position and product linear position
-	RollerDegreesToMM := (brmPI / 180.0) * RollerRadius; // Convert roller positions to product positions
-	RollerMMToDegrees := 180.0 / (brmPI * RollerRadius); // Convert product position to roller position
-	
-	// Calculate the sync entry position
-	SyncEntryPosition := InfeedPosition
-						- NumberOfPockets * PocketPitch
-						- PalletToPalletGap
-						- 50.0 // Link distance between virtual axis and pallet
-						- (EXPT(REAL_TO_LREAL(gMachine.Sync.Par.EntryVelocity), 2) / (2.0 * REAL_TO_LREAL(gMachine.Sync.Par.EntryAcceleration) * 1.0E03)) // Ramp down distance
-						- 10.0; // 10 extra millimeters
-						
-	SyncQueueTargetPosition := SyncEntryPosition
-								- (EXPT(REAL_TO_LREAL(gMachine.Sync.Par.EntryVelocity), 2) / (2.0 * REAL_TO_LREAL(gMachine.Sync.Par.EntryAcceleration) * 1.0E03)); // Ramp up distance
-								
-END_ACTION
+// Monitor the status of the infeed's master axis - the status may not be available from the Axes task
+fbReadInfeedStatus(Axis := ADR(gAxis01jf), Enable := TRUE);
+
+// Unique axis references
+fbCyclicWriteParPos[0].Axis 	:= ADR(gVAxisPallet_0);
+fbCyclicWriteParPos[1].Axis 	:= ADR(gVAxisPallet_1);
+fbCyclicWriteParPos[2].Axis 	:= ADR(gVAxisPallet_2);
+fbCyclicWriteParPos[3].Axis 	:= ADR(gVAxisPallet_3);
+fbCyclicWriteParTrg[0].Axis 	:= ADR(gVAxisPallet_0);
+fbCyclicWriteParTrg[1].Axis 	:= ADR(gVAxisPallet_1);
+fbCyclicWriteParTrg[2].Axis 	:= ADR(gVAxisPallet_2);
+fbCyclicWriteParTrg[3].Axis 	:= ADR(gVAxisPallet_3);
+fbCyclicWriteParTrg2[0].Axis 	:= ADR(gVAxisPallet_0);
+fbCyclicWriteParTrg2[1].Axis 	:= ADR(gVAxisPallet_1);
+fbCyclicWriteParTrg2[2].Axis 	:= ADR(gVAxisPallet_2);
+fbCyclicWriteParTrg2[3].Axis 	:= ADR(gVAxisPallet_3);
+fbMpCamSequencer[0].MpLink 		:= ADR(gLinkAxisPallet_0);
+fbMpCamSequencer[1].MpLink 		:= ADR(gLinkAxisPallet_1);
+fbMpCamSequencer[2].MpLink 		:= ADR(gLinkAxisPallet_2);
+fbMpCamSequencer[3].MpLink 		:= ADR(gLinkAxisPallet_3);
+
+x := x.FileWrite();
+
+END_PROGRAM

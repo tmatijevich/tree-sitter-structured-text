@@ -922,8 +922,24 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "_variable_instance"
+          "type": "FIELD",
+          "name": "CallName",
+          "content": {
+            "type": "SYMBOL",
+            "name": "identifier"
+          }
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "index"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         },
         {
           "type": "STRING",
@@ -1101,8 +1117,17 @@
           }
         },
         {
-          "type": "SYMBOL",
-          "name": "_variable_instance"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_variable_instance"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "call_expression"
+            }
+          ]
         }
       ]
     },

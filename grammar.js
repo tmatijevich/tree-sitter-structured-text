@@ -201,7 +201,8 @@ module.exports = grammar({
     ),
     
     call_expression: $ => seq(
-      $._variable_instance,
+      field('CallName', $.identifier),
+      optional($.index),
       '(',
       commaSep(choice($.expression_assignment, $._expression)),
       ')'
@@ -229,7 +230,7 @@ module.exports = grammar({
       ']'
     ),
     
-    structure_member: $ => seq(token.immediate('.'), $._variable_instance),
+    structure_member: $ => seq(token.immediate('.'), choice($._variable_instance, $.call_expression)),
     
     bit_masking: $ => seq(token.immediate('.'), /\d{1,2}/),
     

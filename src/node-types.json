@@ -174,7 +174,7 @@
     "type": "call_expression",
     "named": true,
     "fields": {
-      "Name": {
+      "CallName": {
         "multiple": false,
         "required": true,
         "types": [
@@ -207,10 +207,6 @@
         },
         {
           "type": "index",
-          "named": true
-        },
-        {
-          "type": "structure_member",
           "named": true
         },
         {
@@ -715,7 +711,7 @@
     "fields": {
       "Name": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "identifier",
@@ -728,6 +724,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "call_expression",
+          "named": true
+        },
         {
           "type": "index",
           "named": true
