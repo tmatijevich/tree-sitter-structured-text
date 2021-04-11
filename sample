@@ -1,7 +1,180 @@
+PROGRAM _CYCLIC
 
-PROGRAM Main
+	(****************************************************************************************************
+	Status Monitoring
+	****************************************************************************************************)
+	// --------------------------------------------------------------------------------
+	// Monitor all Sync task function blocks for errors
+	IF fbMpCamSequencerDiverter.Error
+	  OR fbMpCamSequencerDiverter.CommandAborted 
+	  OR fbCyclicWriteParTrgDiverter.Error 
+	  OR fbReadInfeedStatus.Error THEN
+		SyncError := TRUE;
+	END_IF
+	FOR LoopSync := 0 TO 3 DO
+		IF fbMpCamSequencer[LoopSync].Error
+		  OR fbMpCamSequencer[LoopSync].CommandAborted
+		  OR fbCyclicWriteParPos[LoopSync].Error
+		  OR fbCyclicWriteParTrg[LoopSync].Error
+		  OR fbCyclicWriteParTrg2[LoopSync].Error
+		  OR fbMTBasicsDT1[LoopSync].Error THEN
+			SyncError := TRUE;
+		END_IF
+	END_FOR
+	
+	// Suspend the infeed synchronization if the SuperTrak has a fault or is disabled
+	SuperTrakSectionFault := FALSE; // Assume no faults
+	FOR LoopSections := 1 TO CONFIG_ST_MAX_SECTIONS DO
+		IF gSuperTrak.Status.Section[LoopSections].Diag.FaultActive THEN
+			SuperTrakSectionFault := TRUE;
+			EXIT;
+		END_IF
+	END_FOR
+	gMachine.Trak.Status.Error := gSuperTrak.Status.System.FaultsActive OR SuperTrakSectionFault;
+	// Automatically set sync operation suspension if fault or disabled (not powered)
+	SyncSuspend := gMachine.Trak.Status.Error OR gSuperTrak.Status.System.Powered = FALSE;
+	
+	// Set the activate command here
 
-	x := y + z - 2 * 3 ** 3;
-	x := (z - 2) * 3;
+	(****************************************************************************************************
+	Product Management
+	****************************************************************************************************)
+	(* Set control signals upon product arrival	*)
+	
+	// --------------------------------------------------------------------------------
+	(* SIMULATION ONLY *)
+	// Simulate a burst of products
+	IF CmdBurst THEN
+		CmdLinkTrigger 			:= FALSE;
+		CmdContinuousProduct 	:= FALSE;
+		ArrivalCount := ArrivalCount + 0.0008; // Increment by cycle time
+		IF ArrivalCount >= ArrivalTime[LoopTimer] THEN
+			SimulatePhotoeye 	:= TRUE; // Simulate the sensor
+			ArrivalCount 		:= 0; // Reset the timer
+			
+			// Wait for all products in the burst
+			IF LoopTimer < 19 THEN
+				LoopTimer := LoopTimer + 1;
+			ELSE
+				CmdBurst 	:= FALSE;
+				LoopTimer 	:= 0;
+			END_IF
+		END_IF
+	ELSE
+		ArrivalCount := 0;
+	END_IF
+
+	// --------------------------------------------------------------------------------
+	(* SIMULATION ONLY *)
+	// Continous arrival
+	//Manually set CmdContinuous Product, or use machine Dry Cycle mode (sim)
+	IF gSim_IO THEN
+		IF gMachine.Sync.Cmd.Activate AND fbMpCamSequencerDiverter.InSync AND Sync[CurrentSyncIndex].Pallet.Ready THEN
+			ContinuousProducts := 32000;
+			CmdContinuousProduct := TRUE;
+		ELSE
+			ContinuousProducts := 20;
+			CmdContinuousProduct := FALSE;
+		END_IF
+	END_IF
+	
+	IF CmdContinuousProduct THEN
+		ProductArrivalTimer := ProductArrivalTimer + 800; // Keep track of time
+		IF gMachine.Sync.Cmd.Activate = FALSE OR SyncSuspend OR SyncError THEN
+			CmdContinuousProduct := FALSE;
+		ELSIF ProductArrivalTimer >= ProductArrivalPeriod THEN // Default every 86000 us
+			ProductArrivalTimer := 0;
+			SimulatePhotoeye 	:= TRUE; // Product trigger
+			ContinuousProductTimer := ContinuousProductTimer + 1; // Count the products
+			IF ContinuousProductTimer >= ContinuousProducts THEN // Default 100 products
+				ContinuousProductTimer 	:= 0;
+				CmdContinuousProduct 	:= FALSE; // Reset the command
+			END_IF
+		END_IF
+	ELSE
+		ProductArrivalTimer := 0;
+	END_IF
+	
+	// --------------------------------------------------------------------------------
+	
+	// Use R_TRIG to detect rising edges
+	fbRTrigProduct(CLK := SimulatePhotoeye OR NOT gINPUT_ProdSensor); //replace with gINPUT_ProdSensor
+
+	// Detect the rising edge and set the appropriate par IDs for cam state transition events
+	IF fbRTrigProduct.Q AND gMachine.Sync.Cmd.Activate AND SyncSuspend = FALSE AND SyncError = FALSE THEN
+		// Check that the diverter axis is ready for a new product arrival
+		IF fbMpCamSequencerDiverter.InSync = FALSE OR fbMpCamSequencerDiverter.Error 
+		  OR fbMpCamSequencerDiverter.ActualStateIndex = 0 THEN
+			// Report error to user logbook
+			LogProduct_DiverterNotReady;
+			SyncError := TRUE;
+		END_IF
+		IF TriggerDiverterPar1 > 0 THEN
+			// Report error to user logbook
+			LogProduct_DiverterTriggerNotReset;
+			SyncError := TRUE;
+		END_IF
+		
+		// Check that the current sync index is ready
+		IF Sync[CurrentSyncIndex].Pallet.Active = FALSE OR Sync[CurrentSyncIndex].Pallet.Ready = FALSE THEN
+			// Report error to user logbook
+			LogProduct_CurrentSyncNotReady;
+			SyncError := TRUE;
+		END_IF
+		IF Sync[CurrentSyncIndex].Pallet.Pocket <> CurrentPocket THEN
+			// Report error to user logbook
+			LogProduct_CurrentSyncMissedPocket;
+			SyncError := TRUE;
+		END_IF
+		FOR LoopSync := 0 TO 3 DO
+			IF TriggerPalletPar1[LoopSync] > 0 OR TriggerPalletPar2[LoopSync] > 0 THEN
+				// Report error to user logbook
+				LogProduct_PalletTriggerNotReset;
+				SyncError := TRUE;
+			END_IF
+		END_FOR
+	
+		IF SyncError = FALSE THEN // No error detected
+			// Set diverter and virtual axis triggers
+			IF CurrentPocket MOD NumberOfPockets = 0 THEN
+				TriggerDiverterPar2 := 1;
+			ELSE
+				TriggerDiverterPar1 := 1;
+			END_IF
+			FOR LoopSync := 0 TO 3 DO
+				// If the virtual axis is currently on pocket -1, perform the pallet-to-pallet transition (ParID 2)
+				IF Sync[LoopSync].Pallet.Pocket MOD NumberOfPockets = 0 THEN
+					TriggerPalletPar2[LoopSync] := 1;
+				ELSE
+					TriggerPalletPar1[LoopSync] := 1;
+				END_IF
+			END_FOR
+			// Increment the current pocket
+			CurrentPocket := (CurrentPocket + 1) MOD NumberOfPockets; // 0..(NumberOfPockets - 1)
+		END_IF
+	END_IF
+	
+	// --------------------------------------------------------------------------------
+	
+	// Determine the phantom pocket based on the current pocket
+	IF CurrentSyncIndex = NextSyncIndex THEN // Not started
+		CurrentPhantomPocket := 0;
+	ELSE
+		CurrentPhantomPocket := CurrentPocket - NumberOfPockets; 
+	END_IF
+	
+	// --------------------------------------------------------------------------------
+	// Simulate the photoeye sensor as high for the duration of the product length
+	(* SIMULATION ONLY *)
+	IF SimulatePhotoeye THEN
+		SimProductDurationTimer := SimProductDurationTimer + 800;
+		IF SimProductDurationTimer >= SimProductDurationPeriod THEN // 2/3 of 86 milliseconds
+			// Reset the timer and reset the simulated photoeye (do this after the par IDs have been set)
+			SimProductDurationTimer := 0;
+			SimulatePhotoeye 		:= FALSE;
+		END_IF
+	ELSE
+		SimProductDurationTimer := 0; // Reset the product duration timer if the simulated sensor is low
+	END_IF
 
 END_PROGRAM

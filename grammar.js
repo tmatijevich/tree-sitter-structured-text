@@ -10,7 +10,8 @@ module.exports = grammar({
   word: $ => $.identifier,
   
   conflicts: $ => [
-    [$.case]
+    [$.case],
+    [$._variable_instance]
   ],
   
   supertypes: $ => [
@@ -47,6 +48,8 @@ module.exports = grammar({
     
     statement: $ => choice(
       $.assignment,
+      $.expression_statement,
+      $.call_statement,
       $._control_statement,
       $._loop_statement,
       // expression statement
@@ -68,6 +71,10 @@ module.exports = grammar({
       $._expression,
       ';'
     ),
+    
+    expression_statement: $ => seq($.variable, ';'),
+    
+    call_statement: $ => seq($.call_expression, ';'),
     
     if_statement: $ => seq(
       'IF',
@@ -150,7 +157,8 @@ module.exports = grammar({
       $.variable,
       $._parenthesis_expression,
       $.unary_expression,
-      $.binary_expression
+      $.binary_expression,
+      $.call_expression
     ),
     
     expression_assignment: $ => seq(
@@ -183,14 +191,26 @@ module.exports = grammar({
       prec.left(0, seq($._expression, 'OR', $._expression))
     ),
     
+    call_expression: $ => seq(
+      $._variable_instance,
+      '(',
+      commaSep(choice($.expression_assignment, $._expression)),
+      ')'
+    ),
+    
     /*
       Variables
     */
     
-    variable: $ => seq(
+    _variable_instance: $ => seq(
       field('Name', $.identifier),
       optional($.index),
       optional($.structure_member)
+    ),
+    
+    variable: $ => seq(
+      $._variable_instance,
+      optional($.bit_masking)
     ),
     
     index: $ => seq(
@@ -200,13 +220,9 @@ module.exports = grammar({
       ']'
     ),
     
-    structure_member: $ => seq(
-      token.immediate('.'),
-      choice(
-        $.variable,
-        /\d{1,2}/ // bit masking up to 32
-      )
-    ),
+    structure_member: $ => seq(token.immediate('.'), $._variable_instance),
+    
+    bit_masking: $ => seq(token.immediate('.'), /\d{1,2}/),
     
     /*
       Literals
@@ -218,7 +234,29 @@ module.exports = grammar({
       // time or date
     ),
     
-    number: $ => /\d+/,
+    number: $ => {
+      const integer = seq(
+        optional(/[\+-]/),
+        /\d/,
+        repeat(choice('_', /\d/))
+      );
+      const scientific = seq(/[eE]/, integer);
+      const floatingPoint = seq(
+        integer,
+        choice(
+          seq(
+            '.',
+            repeat(choice('_', /\d/)),
+            optional(scientific)
+          ),
+          scientific
+        )
+      );
+      const binary = seq('2#', /_*[0-1]/, repeat(choice('_', /[0-1]/)));
+      const octal = seq('8#', /_*[0-7]/, repeat(choice('_', /[0-7]/)));
+      const hexidecimal = seq('16#', /_*[0-9a-fA-F]/, repeat(choice('_', /[0-9a-fA-F]/)));
+      return token(choice(integer, floatingPoint, binary, octal, hexidecimal));
+    },
     
     /*
       Comments: Reviewed tree-sitter-javascript\grammar.js and tree-sitter-c\grammar.js
