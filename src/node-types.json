@@ -18,6 +18,10 @@
     "named": true,
     "subtypes": [
       {
+        "type": "action_definition",
+        "named": true
+      },
+      {
         "type": "program_definition",
         "named": true
       }
@@ -29,6 +33,10 @@
     "subtypes": [
       {
         "type": "number",
+        "named": true
+      },
+      {
+        "type": "string",
         "named": true
       }
     ]
@@ -68,6 +76,32 @@
         "named": true
       }
     ]
+  },
+  {
+    "type": "action_definition",
+    "named": true,
+    "fields": {
+      "ActionName": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "statement",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "assignment",
@@ -259,7 +293,7 @@
         "required": true,
         "types": [
           {
-            "type": "identifier",
+            "type": "variable",
             "named": true
           }
         ]
@@ -386,7 +420,18 @@
   {
     "type": "expression_assignment",
     "named": true,
-    "fields": {},
+    "fields": {
+      "Name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": true,
@@ -401,6 +446,14 @@
         },
         {
           "type": "call_expression",
+          "named": true
+        },
+        {
+          "type": "index",
+          "named": true
+        },
+        {
+          "type": "structure_member",
           "named": true
         },
         {
@@ -828,6 +881,10 @@
     "named": false
   },
   {
+    "type": "ACTION",
+    "named": false
+  },
+  {
     "type": "AND",
     "named": false
   },
@@ -852,6 +909,10 @@
     "named": false
   },
   {
+    "type": "END_ACTION",
+    "named": false
+  },
+  {
     "type": "END_CASE",
     "named": false
   },
@@ -873,6 +934,10 @@
   },
   {
     "type": "IF",
+    "named": false
+  },
+  {
+    "type": "MOD",
     "named": false
   },
   {
@@ -925,6 +990,10 @@
   },
   {
     "type": "number",
+    "named": true
+  },
+  {
+    "type": "string",
     "named": true
   }
 ]

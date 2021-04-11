@@ -31,7 +31,7 @@ module.exports = grammar({
     
     _definition: $ => choice(
       $.program_definition,
-      // action
+      $.action_definition,
       // function defintion
     ),
     
@@ -40,6 +40,14 @@ module.exports = grammar({
       field('ProgramName', $.identifier),
       repeat($.statement),
       'END_PROGRAM'
+    ),
+    
+    action_definition: $ => seq(
+      'ACTION',
+      field('ActionName', $.identifier),
+      ':',
+      repeat($.statement),
+      'END_ACTION'
     ),
     
     /* 
@@ -89,7 +97,7 @@ module.exports = grammar({
     
     case_statement: $ => seq(
       'CASE',
-      field('CaseControlValue', $.identifier),
+      field('CaseControlValue', $.variable),
       'OF',
       repeat($.case),
       optional($.else_case),
@@ -162,7 +170,7 @@ module.exports = grammar({
     ),
     
     expression_assignment: $ => seq(
-      $.variable,
+      $._variable_instance,
       ':=',
       $._expression
     ),
@@ -178,6 +186,7 @@ module.exports = grammar({
       prec.left(5, seq($._expression, '**', $._expression)),
       prec.left(4, seq($._expression, '*', $._expression)),
       prec.left(4, seq($._expression, '/', $._expression)),
+      prec.left(4, seq($._expression, 'MOD', $._expression)),
       prec.left(3, seq($._expression, '+', $._expression)),
       prec.left(3, seq($._expression, '-', $._expression)),
       prec.left(2, seq($._expression, '<', $._expression)),
@@ -230,7 +239,7 @@ module.exports = grammar({
     
     _literal: $ => choice(
       $.number, 
-      // string
+      $.string,
       // time or date
     ),
     
@@ -257,6 +266,12 @@ module.exports = grammar({
       const hexidecimal = seq('16#', /_*[0-9a-fA-F]/, repeat(choice('_', /[0-9a-fA-F]/)));
       return token(choice(integer, floatingPoint, binary, octal, hexidecimal));
     },
+    
+    string: $ => token(prec.left(seq(
+      '\'',
+      /.*/,
+      '\''
+    ))),
     
     /*
       Comments: Reviewed tree-sitter-javascript\grammar.js and tree-sitter-c\grammar.js
