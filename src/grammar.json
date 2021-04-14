@@ -131,6 +131,14 @@
         {
           "type": "SYMBOL",
           "name": "for_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "repeat_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "while_statement"
         }
       ]
     },
@@ -340,6 +348,90 @@
         }
       ]
     },
+    "repeat_statement": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "REPEAT"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "statement"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "UNTIL"
+        },
+        {
+          "type": "FIELD",
+          "name": "TerminationCondition",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_expression"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "END_REPEAT"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": ";"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
+    },
+    "while_statement": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "WHILE"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_expression"
+        },
+        {
+          "type": "STRING",
+          "value": "DO"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "statement"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "END_WHILE"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": ";"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
+    },
     "elseif_clause": {
       "type": "SEQ",
       "members": [
@@ -467,7 +559,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "expression_assignment"
+          "name": "statement_initialization"
         },
         {
           "type": "STRING",
@@ -500,6 +592,23 @@
         }
       ]
     },
+    "statement_initialization": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "variable"
+        },
+        {
+          "type": "STRING",
+          "value": ":="
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_expression"
+        }
+      ]
+    },
     "_expression": {
       "type": "CHOICE",
       "members": [
@@ -525,24 +634,11 @@
         },
         {
           "type": "SYMBOL",
+          "name": "mask_expression"
+        },
+        {
+          "type": "SYMBOL",
           "name": "call_expression"
-        }
-      ]
-    },
-    "expression_assignment": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "_variable_instance"
-        },
-        {
-          "type": "STRING",
-          "value": ":="
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_expression"
         }
       ]
     },
@@ -918,12 +1014,34 @@
         }
       ]
     },
+    "parameter_assignment": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "identifier"
+          },
+          "named": true,
+          "value": "parameter"
+        },
+        {
+          "type": "STRING",
+          "value": ":="
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_expression"
+        }
+      ]
+    },
     "call_expression": {
       "type": "SEQ",
       "members": [
         {
           "type": "FIELD",
-          "name": "CallName",
+          "name": "FunctionName",
           "content": {
             "type": "SYMBOL",
             "name": "identifier"
@@ -956,7 +1074,7 @@
                   "members": [
                     {
                       "type": "SYMBOL",
-                      "name": "expression_assignment"
+                      "name": "parameter_assignment"
                     },
                     {
                       "type": "SYMBOL",
@@ -978,7 +1096,7 @@
                         "members": [
                           {
                             "type": "SYMBOL",
-                            "name": "expression_assignment"
+                            "name": "parameter_assignment"
                           },
                           {
                             "type": "SYMBOL",
@@ -1002,7 +1120,27 @@
         }
       ]
     },
-    "_variable_instance": {
+    "mask_expression": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "variable"
+        },
+        {
+          "type": "IMMEDIATE_TOKEN",
+          "content": {
+            "type": "STRING",
+            "value": "."
+          }
+        },
+        {
+          "type": "PATTERN",
+          "value": "\\d{1,2}"
+        }
+      ]
+    },
+    "variable": {
       "type": "SEQ",
       "members": [
         {
@@ -1031,27 +1169,6 @@
             {
               "type": "SYMBOL",
               "name": "structure_member"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
-        }
-      ]
-    },
-    "variable": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "_variable_instance"
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "bit_masking"
             },
             {
               "type": "BLANK"
@@ -1121,7 +1238,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "_variable_instance"
+              "name": "variable"
             },
             {
               "type": "SYMBOL",
@@ -1131,25 +1248,13 @@
         }
       ]
     },
-    "bit_masking": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "IMMEDIATE_TOKEN",
-          "content": {
-            "type": "STRING",
-            "value": "."
-          }
-        },
-        {
-          "type": "PATTERN",
-          "value": "\\d{1,2}"
-        }
-      ]
-    },
     "_literal": {
       "type": "CHOICE",
       "members": [
+        {
+          "type": "SYMBOL",
+          "name": "boolean"
+        },
         {
           "type": "SYMBOL",
           "name": "number"
@@ -1159,6 +1264,22 @@
           "name": "string"
         }
       ]
+    },
+    "boolean": {
+      "type": "TOKEN",
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "TRUE"
+          },
+          {
+            "type": "STRING",
+            "value": "FALSE"
+          }
+        ]
+      }
     },
     "number": {
       "type": "TOKEN",
@@ -1548,7 +1669,7 @@
       "case"
     ],
     [
-      "_variable_instance"
+      "variable"
     ]
   ],
   "externals": [],

@@ -32,6 +32,10 @@
     "named": true,
     "subtypes": [
       {
+        "type": "boolean",
+        "named": true
+      },
+      {
         "type": "number",
         "named": true
       },
@@ -47,6 +51,14 @@
     "subtypes": [
       {
         "type": "for_statement",
+        "named": true
+      },
+      {
+        "type": "repeat_statement",
+        "named": true
+      },
+      {
+        "type": "while_statement",
         "named": true
       }
     ]
@@ -124,6 +136,10 @@
           "named": true
         },
         {
+          "type": "mask_expression",
+          "named": true
+        },
+        {
           "type": "unary_expression",
           "named": true
         },
@@ -155,6 +171,10 @@
           "named": true
         },
         {
+          "type": "mask_expression",
+          "named": true
+        },
+        {
           "type": "unary_expression",
           "named": true
         },
@@ -166,15 +186,10 @@
     }
   },
   {
-    "type": "bit_masking",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "call_expression",
     "named": true,
     "fields": {
-      "CallName": {
+      "FunctionName": {
         "multiple": false,
         "required": true,
         "types": [
@@ -202,11 +217,15 @@
           "named": true
         },
         {
-          "type": "expression_assignment",
+          "type": "index",
           "named": true
         },
         {
-          "type": "index",
+          "type": "mask_expression",
+          "named": true
+        },
+        {
+          "type": "parameter_assignment",
           "named": true
         },
         {
@@ -392,6 +411,10 @@
             "named": true
           },
           {
+            "type": "mask_expression",
+            "named": true
+          },
+          {
             "type": "unary_expression",
             "named": true
           },
@@ -408,56 +431,6 @@
       "types": [
         {
           "type": "statement",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "expression_assignment",
-    "named": true,
-    "fields": {
-      "Name": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "identifier",
-            "named": true
-          }
-        ]
-      }
-    },
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "_literal",
-          "named": true
-        },
-        {
-          "type": "binary_expression",
-          "named": true
-        },
-        {
-          "type": "call_expression",
-          "named": true
-        },
-        {
-          "type": "index",
-          "named": true
-        },
-        {
-          "type": "structure_member",
-          "named": true
-        },
-        {
-          "type": "unary_expression",
-          "named": true
-        },
-        {
-          "type": "variable",
           "named": true
         }
       ]
@@ -499,7 +472,11 @@
           "named": true
         },
         {
-          "type": "expression_assignment",
+          "type": "mask_expression",
+          "named": true
+        },
+        {
+          "type": "statement_initialization",
           "named": true
         },
         {
@@ -561,6 +538,10 @@
             "named": true
           },
           {
+            "type": "mask_expression",
+            "named": true
+          },
+          {
             "type": "unary_expression",
             "named": true
           },
@@ -619,6 +600,10 @@
             "named": true
           },
           {
+            "type": "mask_expression",
+            "named": true
+          },
+          {
             "type": "unary_expression",
             "named": true
           },
@@ -653,6 +638,10 @@
             "named": true
           },
           {
+            "type": "mask_expression",
+            "named": true
+          },
+          {
             "type": "unary_expression",
             "named": true
           },
@@ -665,6 +654,60 @@
     }
   },
   {
+    "type": "mask_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "variable",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "parameter_assignment",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "_literal",
+          "named": true
+        },
+        {
+          "type": "binary_expression",
+          "named": true
+        },
+        {
+          "type": "call_expression",
+          "named": true
+        },
+        {
+          "type": "mask_expression",
+          "named": true
+        },
+        {
+          "type": "parameter",
+          "named": true
+        },
+        {
+          "type": "unary_expression",
+          "named": true
+        },
+        {
+          "type": "variable",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "program_definition",
     "named": true,
     "fields": {
@@ -674,6 +717,60 @@
         "types": [
           {
             "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "statement",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "repeat_statement",
+    "named": true,
+    "fields": {
+      "TerminationCondition": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": "_literal",
+            "named": true
+          },
+          {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
+            "type": "call_expression",
+            "named": true
+          },
+          {
+            "type": "mask_expression",
+            "named": true
+          },
+          {
+            "type": "unary_expression",
+            "named": true
+          },
+          {
+            "type": "variable",
             "named": true
           }
         ]
@@ -706,34 +803,54 @@
     }
   },
   {
-    "type": "structure_member",
+    "type": "statement_initialization",
     "named": true,
-    "fields": {
-      "Name": {
-        "multiple": false,
-        "required": false,
-        "types": [
-          {
-            "type": "identifier",
-            "named": true
-          }
-        ]
-      }
-    },
+    "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
+      "types": [
+        {
+          "type": "_literal",
+          "named": true
+        },
+        {
+          "type": "binary_expression",
+          "named": true
+        },
+        {
+          "type": "call_expression",
+          "named": true
+        },
+        {
+          "type": "mask_expression",
+          "named": true
+        },
+        {
+          "type": "unary_expression",
+          "named": true
+        },
+        {
+          "type": "variable",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "structure_member",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
       "types": [
         {
           "type": "call_expression",
           "named": true
         },
         {
-          "type": "index",
-          "named": true
-        },
-        {
-          "type": "structure_member",
+          "type": "variable",
           "named": true
         }
       ]
@@ -757,6 +874,10 @@
         },
         {
           "type": "call_expression",
+          "named": true
+        },
+        {
+          "type": "mask_expression",
           "named": true
         },
         {
@@ -790,15 +911,50 @@
       "required": false,
       "types": [
         {
-          "type": "bit_masking",
-          "named": true
-        },
-        {
           "type": "index",
           "named": true
         },
         {
           "type": "structure_member",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "while_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "_literal",
+          "named": true
+        },
+        {
+          "type": "binary_expression",
+          "named": true
+        },
+        {
+          "type": "call_expression",
+          "named": true
+        },
+        {
+          "type": "mask_expression",
+          "named": true
+        },
+        {
+          "type": "statement",
+          "named": true
+        },
+        {
+          "type": "unary_expression",
+          "named": true
+        },
+        {
+          "type": "variable",
           "named": true
         }
       ]
@@ -929,6 +1085,14 @@
     "named": false
   },
   {
+    "type": "END_REPEAT",
+    "named": false
+  },
+  {
+    "type": "END_WHILE",
+    "named": false
+  },
+  {
     "type": "FOR",
     "named": false
   },
@@ -957,11 +1121,23 @@
     "named": false
   },
   {
+    "type": "REPEAT",
+    "named": false
+  },
+  {
     "type": "THEN",
     "named": false
   },
   {
     "type": "TO",
+    "named": false
+  },
+  {
+    "type": "UNTIL",
+    "named": false
+  },
+  {
+    "type": "WHILE",
     "named": false
   },
   {
@@ -981,6 +1157,10 @@
     "named": true
   },
   {
+    "type": "boolean",
+    "named": true
+  },
+  {
     "type": "identifier",
     "named": true
   },
@@ -990,6 +1170,10 @@
   },
   {
     "type": "number",
+    "named": true
+  },
+  {
+    "type": "parameter",
     "named": true
   },
   {

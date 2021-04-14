@@ -11,7 +11,7 @@ module.exports = grammar({
   
   conflicts: $ => [
     [$.case],
-    [$._variable_instance]
+    [$.variable]
   ],
   
   supertypes: $ => [
@@ -20,7 +20,7 @@ module.exports = grammar({
     $._control_statement,
     $._loop_statement,
     // $._expression,
-    $._literal,
+    $._literal
   ],
   
   rules: {
@@ -59,8 +59,7 @@ module.exports = grammar({
       $.expression_statement,
       $.call_statement,
       $._control_statement,
-      $._loop_statement,
-      // expression statement
+      $._loop_statement
     ),
     
     _control_statement: $ => choice(
@@ -70,7 +69,8 @@ module.exports = grammar({
     
     _loop_statement: $ => choice(
       $.for_statement,
-      // repeat statement
+      $.repeat_statement,
+      $.while_statement
     ),
     
     assignment: $ => seq(
@@ -114,6 +114,24 @@ module.exports = grammar({
       optional(';')
     ),
     
+    repeat_statement: $ => seq(
+      'REPEAT',
+      repeat($.statement),
+      'UNTIL',
+      field('TerminationCondition', $._expression),
+      'END_REPEAT',
+      optional(';')
+    ),
+    
+    while_statement: $ => seq(
+      'WHILE',
+      $._expression,
+      'DO',
+      repeat($.statement),
+      'END_WHILE',
+      optional(';')
+    ),
+    
     /*
       Statement components
     */
@@ -150,10 +168,16 @@ module.exports = grammar({
     ),
     
     for_range: $ => seq(
-      $.expression_assignment,
+      $.statement_initialization,
       'TO',
       $._expression,
       optional(seq('BY', $._expression))
+    ),
+    
+    statement_initialization: $ => seq(
+      $.variable, 
+      ':=', 
+      $._expression
     ),
     
     /*
@@ -166,13 +190,8 @@ module.exports = grammar({
       $._parenthesis_expression,
       $.unary_expression,
       $.binary_expression,
+      $.mask_expression,
       $.call_expression
-    ),
-    
-    expression_assignment: $ => seq(
-      $._variable_instance,
-      ':=',
-      $._expression
     ),
     
     _parenthesis_expression: $ => seq('(', $._expression, ')'),
@@ -200,27 +219,34 @@ module.exports = grammar({
       prec.left(0, seq($._expression, 'OR', $._expression))
     ),
     
+    parameter_assignment: $ => seq(
+      alias($.identifier, $.parameter),
+      ':=',
+      $._expression
+    ),
+    
     call_expression: $ => seq(
-      field('CallName', $.identifier),
-      optional($.index),
+      field('FunctionName', $.identifier),
+      optional($.index), // Only for function block instances
       '(',
-      commaSep(choice($.expression_assignment, $._expression)),
+      commaSep(choice($.parameter_assignment, $._expression)), // Function calls have ordered lists allowing expressions
       ')'
+    ),
+    
+    mask_expression: $ => seq(
+      $.variable, 
+      token.immediate('.'), 
+      /\d{1,2}/
     ),
     
     /*
       Variables
     */
     
-    _variable_instance: $ => seq(
+    variable: $ => seq(
       field('Name', $.identifier),
       optional($.index),
       optional($.structure_member)
-    ),
-    
-    variable: $ => seq(
-      $._variable_instance,
-      optional($.bit_masking)
     ),
     
     index: $ => seq(
@@ -230,19 +256,20 @@ module.exports = grammar({
       ']'
     ),
     
-    structure_member: $ => seq(token.immediate('.'), choice($._variable_instance, $.call_expression)),
-    
-    bit_masking: $ => seq(token.immediate('.'), /\d{1,2}/),
+    structure_member: $ => seq(token.immediate('.'), choice($.variable, $.call_expression)),
     
     /*
       Literals
     */
     
     _literal: $ => choice(
+      $.boolean,
       $.number, 
       $.string,
       // time or date
     ),
+    
+    boolean: $ => token(choice('TRUE', 'FALSE')),
     
     number: $ => {
       const integer = seq(

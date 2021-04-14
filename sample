@@ -1,26 +1,17 @@
 PROGRAM _INIT
 
-// Monitor the status of the infeed's master axis - the status may not be available from the Axes task
-fbReadInfeedStatus(Axis := ADR(gAxis01jf), Enable := TRUE);
+REPEAT
+ x := x + 1;
+ x := x + 1;
+ x := x + 1;
+ x := x + 1;
+ EXIT;
+UNTIL
+	x > 10
+END_REPEAT
 
-// Unique axis references
-fbCyclicWriteParPos[0].Axis 	:= ADR(gVAxisPallet_0);
-fbCyclicWriteParPos[1].Axis 	:= ADR(gVAxisPallet_1);
-fbCyclicWriteParPos[2].Axis 	:= ADR(gVAxisPallet_2);
-fbCyclicWriteParPos[3].Axis 	:= ADR(gVAxisPallet_3);
-fbCyclicWriteParTrg[0].Axis 	:= ADR(gVAxisPallet_0);
-fbCyclicWriteParTrg[1].Axis 	:= ADR(gVAxisPallet_1);
-fbCyclicWriteParTrg[2].Axis 	:= ADR(gVAxisPallet_2);
-fbCyclicWriteParTrg[3].Axis 	:= ADR(gVAxisPallet_3);
-fbCyclicWriteParTrg2[0].Axis 	:= ADR(gVAxisPallet_0);
-fbCyclicWriteParTrg2[1].Axis 	:= ADR(gVAxisPallet_1);
-fbCyclicWriteParTrg2[2].Axis 	:= ADR(gVAxisPallet_2);
-fbCyclicWriteParTrg2[3].Axis 	:= ADR(gVAxisPallet_3);
-fbMpCamSequencer[0].MpLink 		:= ADR(gLinkAxisPallet_0);
-fbMpCamSequencer[1].MpLink 		:= ADR(gLinkAxisPallet_1);
-fbMpCamSequencer[2].MpLink 		:= ADR(gLinkAxisPallet_2);
-fbMpCamSequencer[3].MpLink 		:= ADR(gLinkAxisPallet_3);
-
-x := x.FileWrite();
+WHILE x <= 10 DO
+	x := x + 1;
+END_WHILE;
 
 END_PROGRAM
