@@ -198,6 +198,7 @@ module.exports = grammar({
     
     unary_expression: $ => prec(6, choice(
       seq('NOT', $._expression),
+      seq('+', $._expression),
       seq('-', $._expression)
     )),
     
@@ -273,11 +274,10 @@ module.exports = grammar({
     
     number: $ => {
       const integer = seq(
-        optional(/[\+-]/),
         /\d/,
         repeat(choice('_', /\d/))
       );
-      const scientific = seq(/[eE]/, integer);
+      const scientific = seq(/[eE]/, optional(/[\+-]/), integer);
       const floatingPoint = seq(
         integer,
         choice(

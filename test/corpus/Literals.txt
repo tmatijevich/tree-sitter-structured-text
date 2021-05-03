@@ -3,59 +3,48 @@ Decimals/Integers
 =================
 
 PROGRAM Main
-x := 1_000;
-x := 1_000_000_000;
-x := 1__000;
-x := 1_000_;
-x := 1_____0;
-x := -1___0___0_;
-x := +200000_0000;
+x := 1_000_000_000; // Underscore separators
+x := 1__000; // Repeating underscores
+x := 1000__; // Trailing underscores
+x := _10_00; // This is not a number, but is a legal variable
+x := -1___0___0_; // Leading signs are unary expressions because they can apply to variables
+x := + 200000_00000;
 END_PROGRAM
 
 ---
 
-(source_file [1, 0] - [10, 0]
-  (program_definition [1, 0] - [9, 11]
-    name: (identifier [1, 8] - [1, 12])
-    (statement [2, 0] - [2, 11]
-      (assignment [2, 0] - [2, 11]
-        (variable [2, 0] - [2, 1]
-          name: (identifier [2, 0] - [2, 1]))
-        (literal [2, 5] - [2, 10]
-          (decimal [2, 5] - [2, 10]))))
-    (statement [3, 0] - [3, 19]
-      (assignment [3, 0] - [3, 19]
-        (variable [3, 0] - [3, 1]
-          name: (identifier [3, 0] - [3, 1]))
-        (literal [3, 5] - [3, 18]
-          (decimal [3, 5] - [3, 18]))))
-    (statement [4, 0] - [4, 12]
-      (assignment [4, 0] - [4, 12]
-        (variable [4, 0] - [4, 1]
-          name: (identifier [4, 0] - [4, 1]))
-        (literal [4, 5] - [4, 11]
-          (decimal [4, 5] - [4, 11]))))
-    (statement [5, 0] - [5, 12]
-      (assignment [5, 0] - [5, 12]
-        (variable [5, 0] - [5, 1]
-          name: (identifier [5, 0] - [5, 1]))
-        (literal [5, 5] - [5, 11]
-          (decimal [5, 5] - [5, 11]))))
-    (statement [6, 0] - [6, 13]
-      (assignment [6, 0] - [6, 13]
-        (variable [6, 0] - [6, 1]
-          name: (identifier [6, 0] - [6, 1]))
-        (literal [6, 5] - [6, 12]
-          (decimal [6, 5] - [6, 12]))))
-    (statement [7, 0] - [7, 17]
-      (assignment [7, 0] - [7, 17]
-        (variable [7, 0] - [7, 1]
-          name: (identifier [7, 0] - [7, 1]))
-        (literal [7, 5] - [7, 16]
-          (decimal [7, 5] - [7, 16]))))
-    (statement [8, 0] - [8, 18]
-      (assignment [8, 0] - [8, 18]
-        (variable [8, 0] - [8, 1]
-          name: (identifier [8, 0] - [8, 1]))
-        (literal [8, 5] - [8, 17]
-          (decimal [8, 5] - [8, 17]))))))
+(source_file
+  (program_definition
+    ProgramName: (identifier)
+    (assignment
+      (variable
+        Name: (identifier))
+      (number))
+    (inline_comment)
+    (assignment
+      (variable
+        Name: (identifier))
+      (number))
+    (inline_comment)
+    (assignment
+      (variable
+        Name: (identifier))
+      (number))
+    (inline_comment)
+    (assignment
+      (variable
+        Name: (identifier))
+      (variable
+        Name: (identifier)))
+    (inline_comment)
+    (assignment
+      (variable
+        Name: (identifier))
+      (unary_expression
+        (number)))
+    (inline_comment)
+    (assignment
+      (variable
+        Name: (identifier))
+      (unary_expression
+        (number)))))
