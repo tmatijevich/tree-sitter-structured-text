@@ -1,3 +1,13 @@
+const unsignedInteger = seq(
+  /\d/,
+  repeat(choice('_', /\d/))
+);
+
+const signedInteger = seq(
+  optional(/[\+-]/), 
+  unsignedInteger
+);
+
 module.exports = grammar({
   name: 'structured_text',
   
@@ -10,7 +20,7 @@ module.exports = grammar({
   word: $ => $.identifier,
   
   conflicts: $ => [
-    [$.case],
+    //[$.case],
     [$.variable]
   ],
   
@@ -56,14 +66,14 @@ module.exports = grammar({
     
     statement: $ => choice(
       $.assignment,
-      $.expression_statement,
-      $.call_statement,
-      $._control_statement,
-      $._loop_statement
+      //$.expression_statement,
+      //$.call_statement,
+      //$._control_statement,
+      //$._loop_statement
     ),
     
     _control_statement: $ => choice(
-      $.case_statement,
+      //$.case_statement,
       $.if_statement
     ),
     
@@ -95,15 +105,15 @@ module.exports = grammar({
       optional(';')
     ),
     
-    case_statement: $ => seq(
-      'CASE',
-      field('CaseControlValue', $.variable),
-      'OF',
-      repeat($.case),
-      optional($.else_case),
-      'END_CASE',
-      optional(';')
-    ),
+    // case_statement: $ => seq(
+    //   'CASE',
+    //   field('CaseControlValue', $.variable),
+    //   'OF',
+    //   repeat($.case),
+    //   optional($.else_case),
+    //   'END_CASE',
+    //   optional(';')
+    // ),
     
     for_statement: $ => seq(
       'FOR',
@@ -148,24 +158,24 @@ module.exports = grammar({
       repeat($.statement)
     ),
     
-    case: $ => seq(
-      $.case_value,
-      ':',
-      repeat($.statement)
-    ),
-    
-    else_case: $ => seq(
-      'ELSE',
-      repeat($.statement)
-    ),
-    
-    case_value: $ => choice($.number, $.case_range, $.identifier),
-    
-    case_range: $ => seq(
-      field('LowerLimit', $.number),
-      '..',
-      field('UpperLimit', $.number)
-    ),
+    // case: $ => seq(
+    //   $.case_value,
+    //   ':',
+    //   repeat($.statement)
+    // ),
+    // 
+    // else_case: $ => seq(
+    //   'ELSE',
+    //   repeat($.statement)
+    // ),
+    // 
+    // case_value: $ => choice($.number, $.case_range, $.identifier),
+    // 
+    // case_range: $ => seq(
+    //   field('LowerLimit', $.number),
+    //   '..',
+    //   field('UpperLimit', $.number)
+    // ),
     
     for_range: $ => seq(
       $.statement_initialization,
@@ -187,11 +197,11 @@ module.exports = grammar({
     _expression: $ => choice(
       $._literal,
       $.variable,
-      $._parenthesis_expression,
+      //$._parenthesis_expression,
       $.unary_expression,
-      $.binary_expression,
-      $.mask_expression,
-      $.call_expression
+      //$.binary_expression,
+      //$.mask_expression,
+      //$.call_expression
     ),
     
     _parenthesis_expression: $ => seq('(', $._expression, ')'),
@@ -265,21 +275,29 @@ module.exports = grammar({
     
     _literal: $ => choice(
       $.boolean,
-      $.number, 
+      $.integer,
+      $.floating_point,
+      $.binary,
+      $.octal,
+      $.hexidecimal,
+      $.time,
+      $.date,
+      $.time_of_day,
+      $.date_and_time,
       $.string,
-      // time or date
+      $.wstring
     ),
     
     boolean: $ => token(choice('TRUE', 'FALSE')),
     
-    number: $ => {
-      const integer = seq(
-        /\d/,
-        repeat(choice('_', /\d/))
-      );
-      const scientific = seq(/[eE]/, optional(/[\+-]/), integer);
-      const floatingPoint = seq(
-        integer,
+    integer: $ => {
+      return token(unsignedInteger);
+    },
+    
+    floating_point: $ => {
+      const scientific = seq(/[eE]/, signedInteger);
+      return token(seq(
+        unsignedInteger,
         choice(
           seq(
             '.',
@@ -288,12 +306,49 @@ module.exports = grammar({
           ),
           scientific
         )
-      );
-      const binary = seq('2#', /_*[0-1]/, repeat(choice('_', /[0-1]/)));
-      const octal = seq('8#', /_*[0-7]/, repeat(choice('_', /[0-7]/)));
-      const hexidecimal = seq('16#', /_*[0-9a-fA-F]/, repeat(choice('_', /[0-9a-fA-F]/)));
-      return token(choice(integer, floatingPoint, binary, octal, hexidecimal));
+      ));
     },
+    
+    binary: $ => token(seq('2#', /_*[0-1]/, repeat(choice('_', /[0-1]/)))),
+    
+    octal: $ => token(seq('8#', /_*[0-7]/, repeat(choice('_', /[0-7]/)))),
+    
+    hexidecimal: $ => token(seq('16#', /_*[0-9a-fA-F]/, repeat(choice('_', /[0-9a-fA-F]/)))),
+    
+    time: $ => token(seq(
+      'T#',
+      optional('-'),
+      optional(/\d{1,2}[dD]/),
+      optional(/\d{1,3}[hH]/),
+      optional(/\d{1,5}[mM]/),
+      optional(/\d{1,9}[sS]/),
+      optional(/\d{1,9}((ms)|(MS))/)
+    )),
+    
+    date: $ => token(seq(
+      'D#',
+      /\d(_?\d){3}/, // Year
+      /(-\d(_?\d)?){2}/ // Month and day
+    )),
+    
+    time_of_day: $ => token(seq(
+      'TOD#',
+      /\d(_?\d)?/,
+      ':',
+      /\d(_?\d)?/,
+      optional(seq(
+        ':',
+        /\d(_?\d)?/,
+        optional(seq('.', /\d(_?\d)*/))
+      ))
+    )),
+    
+    date_and_time: $ => seq(
+      'DT#',
+      /\d(_?\d){3}/, // Year
+      /(-\d(_?\d)?){3}/, // Month, day, hour
+      /(:\d(_?\d)?){1,2}/ // Minute, second
+    ),
     
     string: $ => token(prec.left(seq(
       '\'',
@@ -301,18 +356,17 @@ module.exports = grammar({
       '\''
     ))),
     
-    /*
-      Comments: Reviewed tree-sitter-javascript\grammar.js and tree-sitter-c\grammar.js
-    */
-    inline_comment: $ => token(seq('//', /.*/)), // token fixes rust backtrace warning
+    wstring: $ => token(prec.left(seq(
+      '"',
+      /.*/,
+      '"'
+    ))),
     
-    block_comment: $ => token(seq( // http://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890
+    inline_comment: $ => token(seq('//', /.*/)),
+    
+    // http://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890
+    block_comment: $ => token(seq(
       '(*',
-      // 1. Match 0+ characters other than `*`, followed by 1+ literal `*`: `[^*]*\*+`
-      // 2. 0+ of:
-      // 2a. Not a `*` or `)`
-      // 2b. 0+ non-asterisk
-      // 2c. 1+ asterisk
       /[^*]*\*+([^*)][^*]*\*+)*/,
       ')'
     )),
