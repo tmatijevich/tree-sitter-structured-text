@@ -47,7 +47,7 @@ module.exports = grammar({
     
     program_definition: $ => seq(
       'PROGRAM',
-      field('ProgramName', $.identifier),
+      field('programName', $.identifier),
       repeat($.statement),
       'END_PROGRAM'
     ),
@@ -66,15 +66,15 @@ module.exports = grammar({
     
     statement: $ => choice(
       $.assignment,
-      //$.expression_statement,
-      //$.call_statement,
+      $.expression_statement,
+      $.call_statement,
       $._control_statement,
-      //$._loop_statement
+      $._loop_statement
     ),
     
     _control_statement: $ => choice(
       $.case_statement,
-      //$.if_statement
+      $.if_statement
     ),
     
     _loop_statement: $ => choice(
@@ -96,7 +96,7 @@ module.exports = grammar({
     
     if_statement: $ => seq(
       'IF',
-      field('Condition', $._expression),
+      field('condition', $._expression),
       'THEN',
       repeat($.statement),
       repeat($.elseif_clause),
@@ -128,7 +128,7 @@ module.exports = grammar({
       'REPEAT',
       repeat($.statement),
       'UNTIL',
-      field('TerminationCondition', $._expression),
+      field('terminationCondition', $._expression),
       'END_REPEAT',
       optional(';')
     ),
@@ -148,7 +148,7 @@ module.exports = grammar({
     
     elseif_clause: $ => seq(
       'ELSIF',
-      field('ElsifCondition', $._expression),
+      field('elsifCondition', $._expression),
       'THEN',
       repeat($.statement)
     ),
@@ -169,12 +169,16 @@ module.exports = grammar({
       repeat($.statement)
     ),
     
-    case_value: $ => commaSep1(choice(token(signedInteger), $.case_range, $.identifier)),
+    case_value: $ => commaSep1(choice(
+      alias(token(signedInteger), $.integer),
+      $.case_range,
+      $.identifier
+    )),
     
     case_range: $ => seq(
-      field('lowerBound', choice(token(signedInteger), $.identifier)),
+      field('lowerBound', choice(alias(token(signedInteger), $.integer), $.identifier)),
       '..',
-      field('upperBound', choice(token(signedInteger), $.identifier))
+      field('upperBound', choice(alias(token(signedInteger), $.integer), $.identifier))
     ),
     
     for_range: $ => seq(
@@ -197,14 +201,14 @@ module.exports = grammar({
     _expression: $ => choice(
       $._literal,
       $.variable,
-      //$.parenthesis_expression,
+      $.parenthesis_expression,
       $.unary_expression,
-      //$.binary_expression,
-      //$.mask_expression,
-      //$.call_expression
+      $.binary_expression,
+      $.mask_expression,
+      $.call_expression
     ),
     
-    _parenthesis_expression: $ => seq('(', $._expression, ')'),
+    parenthesis_expression: $ => seq('(', $._expression, ')'),
     
     unary_expression: $ => prec(6, choice(
       seq('NOT', $._expression),
@@ -240,7 +244,7 @@ module.exports = grammar({
       field('functionName', $.identifier),
       optional($.index), // Only for function block instances
       '(',
-      commaSep(choice($.parameter_assignment, $._expression)), // Function calls have ordered lists allowing expressions
+      commaSep(field('input', choice($.parameter_assignment, $._expression))), // Function calls have ordered lists allowing expressions
       ')'
     ),
     

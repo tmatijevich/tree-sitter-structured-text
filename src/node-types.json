@@ -6,6 +6,10 @@
       {
         "type": "case_statement",
         "named": true
+      },
+      {
+        "type": "if_statement",
+        "named": true
       }
     ]
   },
@@ -29,6 +33,22 @@
     "subtypes": [
       {
         "type": "_literal",
+        "named": true
+      },
+      {
+        "type": "binary_expression",
+        "named": true
+      },
+      {
+        "type": "call_expression",
+        "named": true
+      },
+      {
+        "type": "mask_expression",
+        "named": true
+      },
+      {
+        "type": "parenthesis_expression",
         "named": true
       },
       {
@@ -122,7 +142,19 @@
         "named": true
       },
       {
+        "type": "_loop_statement",
+        "named": true
+      },
+      {
         "type": "assignment",
+        "named": true
+      },
+      {
+        "type": "call_statement",
+        "named": true
+      },
+      {
+        "type": "expression_statement",
         "named": true
       }
     ]
@@ -169,6 +201,21 @@
     }
   },
   {
+    "type": "binary_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "call_expression",
     "named": true,
     "fields": {
@@ -181,22 +228,43 @@
             "named": true
           }
         ]
+      },
+      "input": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "_expression",
+            "named": true
+          },
+          {
+            "type": "parameter_assignment",
+            "named": true
+          }
+        ]
       }
     },
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": false,
       "types": [
         {
-          "type": "_expression",
-          "named": true
-        },
-        {
           "type": "index",
           "named": true
-        },
+        }
+      ]
+    }
+  },
+  {
+    "type": "call_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
         {
-          "type": "parameter_assignment",
+          "type": "call_expression",
           "named": true
         }
       ]
@@ -232,6 +300,10 @@
           {
             "type": "identifier",
             "named": true
+          },
+          {
+            "type": "integer",
+            "named": true
           }
         ]
       },
@@ -241,6 +313,10 @@
         "types": [
           {
             "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "integer",
             "named": true
           }
         ]
@@ -283,7 +359,7 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
         {
           "type": "case_range",
@@ -291,6 +367,10 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "integer",
           "named": true
         }
       ]
@@ -335,7 +415,7 @@
     "type": "elseif_clause",
     "named": true,
     "fields": {
-      "ElsifCondition": {
+      "elsifCondition": {
         "multiple": false,
         "required": true,
         "types": [
@@ -352,6 +432,21 @@
       "types": [
         {
           "type": "statement",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expression_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "variable",
           "named": true
         }
       ]
@@ -396,6 +491,40 @@
     }
   },
   {
+    "type": "if_statement",
+    "named": true,
+    "fields": {
+      "condition": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "_expression",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "else_clause",
+          "named": true
+        },
+        {
+          "type": "elseif_clause",
+          "named": true
+        },
+        {
+          "type": "statement",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "index",
     "named": true,
     "fields": {
@@ -422,6 +551,21 @@
     }
   },
   {
+    "type": "mask_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "variable",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "parameter_assignment",
     "named": true,
     "fields": {},
@@ -441,10 +585,25 @@
     }
   },
   {
+    "type": "parenthesis_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "program_definition",
     "named": true,
     "fields": {
-      "ProgramName": {
+      "programName": {
         "multiple": false,
         "required": true,
         "types": [
@@ -470,7 +629,7 @@
     "type": "repeat_statement",
     "named": true,
     "fields": {
-      "TerminationCondition": {
+      "terminationCondition": {
         "multiple": false,
         "required": true,
         "types": [
