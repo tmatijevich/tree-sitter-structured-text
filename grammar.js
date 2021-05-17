@@ -20,7 +20,7 @@ module.exports = grammar({
   word: $ => $.identifier,
   
   conflicts: $ => [
-    //[$.case],
+    [$.case],
     [$.variable]
   ],
   
@@ -29,7 +29,7 @@ module.exports = grammar({
     $.statement,
     $._control_statement,
     $._loop_statement,
-    // $._expression,
+    $._expression,
     $._literal
   ],
   
@@ -68,13 +68,13 @@ module.exports = grammar({
       $.assignment,
       //$.expression_statement,
       //$.call_statement,
-      //$._control_statement,
+      $._control_statement,
       //$._loop_statement
     ),
     
     _control_statement: $ => choice(
-      //$.case_statement,
-      $.if_statement
+      $.case_statement,
+      //$.if_statement
     ),
     
     _loop_statement: $ => choice(
@@ -105,15 +105,15 @@ module.exports = grammar({
       optional(';')
     ),
     
-    // case_statement: $ => seq(
-    //   'CASE',
-    //   field('CaseControlValue', $.variable),
-    //   'OF',
-    //   repeat($.case),
-    //   optional($.else_case),
-    //   'END_CASE',
-    //   optional(';')
-    // ),
+    case_statement: $ => seq(
+      'CASE',
+      field('caseControlValue', $.variable),
+      'OF',
+      repeat($.case),
+      optional($.else_case),
+      'END_CASE',
+      optional(';')
+    ),
     
     for_statement: $ => seq(
       'FOR',
@@ -158,24 +158,24 @@ module.exports = grammar({
       repeat($.statement)
     ),
     
-    // case: $ => seq(
-    //   $.case_value,
-    //   ':',
-    //   repeat($.statement)
-    // ),
-    // 
-    // else_case: $ => seq(
-    //   'ELSE',
-    //   repeat($.statement)
-    // ),
-    // 
-    // case_value: $ => choice($.number, $.case_range, $.identifier),
-    // 
-    // case_range: $ => seq(
-    //   field('LowerLimit', $.number),
-    //   '..',
-    //   field('UpperLimit', $.number)
-    // ),
+    case: $ => seq(
+      $.case_value,
+      ':',
+      repeat($.statement)
+    ),
+    
+    else_case: $ => seq(
+      'ELSE',
+      repeat($.statement)
+    ),
+    
+    case_value: $ => commaSep1(choice(token(signedInteger), $.case_range, $.identifier)),
+    
+    case_range: $ => seq(
+      field('lowerBound', choice(token(signedInteger), $.identifier)),
+      '..',
+      field('upperBound', choice(token(signedInteger), $.identifier))
+    ),
     
     for_range: $ => seq(
       $.statement_initialization,
@@ -197,7 +197,7 @@ module.exports = grammar({
     _expression: $ => choice(
       $._literal,
       $.variable,
-      //$._parenthesis_expression,
+      //$.parenthesis_expression,
       $.unary_expression,
       //$.binary_expression,
       //$.mask_expression,
@@ -237,7 +237,7 @@ module.exports = grammar({
     ),
     
     call_expression: $ => seq(
-      field('FunctionName', $.identifier),
+      field('functionName', $.identifier),
       optional($.index), // Only for function block instances
       '(',
       commaSep(choice($.parameter_assignment, $._expression)), // Function calls have ordered lists allowing expressions
@@ -255,15 +255,15 @@ module.exports = grammar({
     */
     
     variable: $ => seq(
-      field('Name', $.identifier),
+      field('name', $.identifier),
       optional($.index),
       optional($.structure_member)
     ),
     
     index: $ => seq(
       '[',
-      field('Dim1', $._expression),
-      optional(seq(',', field('Dim2', $._expression))),
+      field('dim1', $._expression),
+      optional(seq(',', field('dim2', $._expression))),
       ']'
     ),
     

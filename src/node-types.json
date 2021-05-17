@@ -4,7 +4,7 @@
     "named": true,
     "subtypes": [
       {
-        "type": "if_statement",
+        "type": "case_statement",
         "named": true
       }
     ]
@@ -19,6 +19,24 @@
       },
       {
         "type": "program_definition",
+        "named": true
+      }
+    ]
+  },
+  {
+    "type": "_expression",
+    "named": true,
+    "subtypes": [
+      {
+        "type": "_literal",
+        "named": true
+      },
+      {
+        "type": "unary_expression",
+        "named": true
+      },
+      {
+        "type": "variable",
         "named": true
       }
     ]
@@ -100,6 +118,10 @@
     "named": true,
     "subtypes": [
       {
+        "type": "_control_statement",
+        "named": true
+      },
+      {
         "type": "assignment",
         "named": true
       }
@@ -140,15 +162,7 @@
       "required": true,
       "types": [
         {
-          "type": "_literal",
-          "named": true
-        },
-        {
-          "type": "unary_expression",
-          "named": true
-        },
-        {
-          "type": "variable",
+          "type": "_expression",
           "named": true
         }
       ]
@@ -158,7 +172,7 @@
     "type": "call_expression",
     "named": true,
     "fields": {
-      "FunctionName": {
+      "functionName": {
         "multiple": false,
         "required": true,
         "types": [
@@ -174,7 +188,7 @@
       "required": false,
       "types": [
         {
-          "type": "_literal",
+          "type": "_expression",
           "named": true
         },
         {
@@ -184,13 +198,99 @@
         {
           "type": "parameter_assignment",
           "named": true
-        },
+        }
+      ]
+    }
+  },
+  {
+    "type": "case",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
         {
-          "type": "unary_expression",
+          "type": "case_value",
           "named": true
         },
         {
-          "type": "variable",
+          "type": "statement",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "case_range",
+    "named": true,
+    "fields": {
+      "lowerBound": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "upperBound": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "case_statement",
+    "named": true,
+    "fields": {
+      "caseControlValue": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "variable",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "case",
+          "named": true
+        },
+        {
+          "type": "else_case",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "case_value",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "case_range",
+          "named": true
+        },
+        {
+          "type": "identifier",
           "named": true
         }
       ]
@@ -200,6 +300,21 @@
     "type": "date_and_time",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "else_case",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "statement",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "else_clause",
@@ -225,15 +340,7 @@
         "required": true,
         "types": [
           {
-            "type": "_literal",
-            "named": true
-          },
-          {
-            "type": "unary_expression",
-            "named": true
-          },
-          {
-            "type": "variable",
+            "type": "_expression",
             "named": true
           }
         ]
@@ -259,19 +366,11 @@
       "required": true,
       "types": [
         {
-          "type": "_literal",
+          "type": "_expression",
           "named": true
         },
         {
           "type": "statement_initialization",
-          "named": true
-        },
-        {
-          "type": "unary_expression",
-          "named": true
-        },
-        {
-          "type": "variable",
           "named": true
         }
       ]
@@ -297,83 +396,25 @@
     }
   },
   {
-    "type": "if_statement",
-    "named": true,
-    "fields": {
-      "Condition": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "_literal",
-            "named": true
-          },
-          {
-            "type": "unary_expression",
-            "named": true
-          },
-          {
-            "type": "variable",
-            "named": true
-          }
-        ]
-      }
-    },
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "else_clause",
-          "named": true
-        },
-        {
-          "type": "elseif_clause",
-          "named": true
-        },
-        {
-          "type": "statement",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "index",
     "named": true,
     "fields": {
-      "Dim1": {
+      "dim1": {
         "multiple": false,
         "required": true,
         "types": [
           {
-            "type": "_literal",
-            "named": true
-          },
-          {
-            "type": "unary_expression",
-            "named": true
-          },
-          {
-            "type": "variable",
+            "type": "_expression",
             "named": true
           }
         ]
       },
-      "Dim2": {
+      "dim2": {
         "multiple": false,
         "required": false,
         "types": [
           {
-            "type": "_literal",
-            "named": true
-          },
-          {
-            "type": "unary_expression",
-            "named": true
-          },
-          {
-            "type": "variable",
+            "type": "_expression",
             "named": true
           }
         ]
@@ -389,19 +430,11 @@
       "required": true,
       "types": [
         {
-          "type": "_literal",
+          "type": "_expression",
           "named": true
         },
         {
           "type": "parameter",
-          "named": true
-        },
-        {
-          "type": "unary_expression",
-          "named": true
-        },
-        {
-          "type": "variable",
           "named": true
         }
       ]
@@ -442,15 +475,7 @@
         "required": true,
         "types": [
           {
-            "type": "_literal",
-            "named": true
-          },
-          {
-            "type": "unary_expression",
-            "named": true
-          },
-          {
-            "type": "variable",
+            "type": "_expression",
             "named": true
           }
         ]
@@ -491,15 +516,7 @@
       "required": true,
       "types": [
         {
-          "type": "_literal",
-          "named": true
-        },
-        {
-          "type": "unary_expression",
-          "named": true
-        },
-        {
-          "type": "variable",
+          "type": "_expression",
           "named": true
         }
       ]
@@ -533,15 +550,7 @@
       "required": true,
       "types": [
         {
-          "type": "_literal",
-          "named": true
-        },
-        {
-          "type": "unary_expression",
-          "named": true
-        },
-        {
-          "type": "variable",
+          "type": "_expression",
           "named": true
         }
       ]
@@ -551,7 +560,7 @@
     "type": "variable",
     "named": true,
     "fields": {
-      "Name": {
+      "name": {
         "multiple": false,
         "required": true,
         "types": [
@@ -586,19 +595,11 @@
       "required": true,
       "types": [
         {
-          "type": "_literal",
+          "type": "_expression",
           "named": true
         },
         {
           "type": "statement",
-          "named": true
-        },
-        {
-          "type": "unary_expression",
-          "named": true
-        },
-        {
-          "type": "variable",
           "named": true
         }
       ]
@@ -634,6 +635,10 @@
   },
   {
     "type": ".",
+    "named": false
+  },
+  {
+    "type": "..",
     "named": false
   },
   {
@@ -689,6 +694,10 @@
     "named": false
   },
   {
+    "type": "CASE",
+    "named": false
+  },
+  {
     "type": "DO",
     "named": false
   },
@@ -706,6 +715,10 @@
   },
   {
     "type": "END_ACTION",
+    "named": false
+  },
+  {
+    "type": "END_CASE",
     "named": false
   },
   {
@@ -742,6 +755,10 @@
   },
   {
     "type": "NOT",
+    "named": false
+  },
+  {
+    "type": "OF",
     "named": false
   },
   {
