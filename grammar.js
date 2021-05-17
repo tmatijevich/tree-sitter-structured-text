@@ -21,7 +21,8 @@ module.exports = grammar({
   
   conflicts: $ => [
     [$.case],
-    [$.variable]
+    [$.variable],
+    [$.variable, $.call_expression]
   ],
   
   supertypes: $ => [
@@ -36,13 +37,18 @@ module.exports = grammar({
   rules: {
     source_file: $ => repeat(choice(
       $._definition, 
-      // declaration
+      $._declaration
     )),
     
     _definition: $ => choice(
       $.program_definition,
       $.action_definition,
       // function defintion
+    ),
+    
+    _declaration: $ => choice(
+      $.constant_declaration,
+      // variable declaration
     ),
     
     program_definition: $ => seq(
@@ -58,6 +64,12 @@ module.exports = grammar({
       ':',
       repeat($.statement),
       'END_ACTION'
+    ),
+    
+    constant_declaration: $ => seq(
+      'VAR', 'CONSTANT',
+      repeat($.constant),
+      'END_VAR'
     ),
     
     /* 
@@ -195,6 +207,29 @@ module.exports = grammar({
     ),
     
     /*
+      Declarations
+    */
+    
+    constant: $ => seq(
+      field('name', $.identifier),
+      ':',
+      $._data_type, 
+      $.variable_initialization
+    ),
+    
+    /*
+      Declaration components
+    */
+    variable_initialization: $ => seq(
+      ':=',
+      choice(
+        commaSep1(choice($._expression, $.repetition_expression)),
+        seq('[', commaSep1(choice($._expression, $.repetition_expression)), ']')
+      ),
+      ';'
+    ),
+    
+    /*
       Expressions
     */
     
@@ -272,6 +307,33 @@ module.exports = grammar({
     ),
     
     structure_member: $ => seq(token.immediate('.'), choice($.variable, $.call_expression)),
+    
+    repetition_expression: $ => seq(
+      $._expression,
+      '(', $._expression, ')'
+    ),
+    
+    /*
+      Data types
+    */
+    _data_type: $ => choice(
+      $.basic_data_type
+    ),
+    
+    basic_data_type: $ => choice(
+      'BOOL',
+      /U?[SD]?INT/,
+      /L?REAL/,
+      'TIME',
+      'DATE',
+      'TIME_OF_DAY',
+      'TOD',
+      'DATE_AND_TIME',
+      'DT',
+      /W?STRING/,
+      'BYTE',
+      /D?WORD/
+    ),
     
     /*
       Literals

@@ -201,6 +201,11 @@
     }
   },
   {
+    "type": "basic_data_type",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "binary_expression",
     "named": true,
     "fields": {},
@@ -371,6 +376,51 @@
         },
         {
           "type": "integer",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "constant",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "basic_data_type",
+          "named": true
+        },
+        {
+          "type": "variable_initialization",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "constant_declaration",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "constant",
           "named": true
         }
       ]
@@ -652,6 +702,21 @@
     }
   },
   {
+    "type": "repetition_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "source_file",
     "named": true,
     "fields": {},
@@ -661,6 +726,10 @@
       "types": [
         {
           "type": "_definition",
+          "named": true
+        },
+        {
+          "type": "constant_declaration",
           "named": true
         }
       ]
@@ -740,6 +809,25 @@
         },
         {
           "type": "structure_member",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "variable_initialization",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "_expression",
+          "named": true
+        },
+        {
+          "type": "repetition_expression",
           "named": true
         }
       ]
@@ -849,7 +937,15 @@
     "named": false
   },
   {
+    "type": "BOOL",
+    "named": false
+  },
+  {
     "type": "BY",
+    "named": false
+  },
+  {
+    "type": "BYTE",
     "named": false
   },
   {
@@ -857,7 +953,23 @@
     "named": false
   },
   {
+    "type": "CONSTANT",
+    "named": false
+  },
+  {
+    "type": "DATE",
+    "named": false
+  },
+  {
+    "type": "DATE_AND_TIME",
+    "named": false
+  },
+  {
     "type": "DO",
+    "named": false
+  },
+  {
+    "type": "DT",
     "named": false
   },
   {
@@ -894,6 +1006,10 @@
   },
   {
     "type": "END_REPEAT",
+    "named": false
+  },
+  {
+    "type": "END_VAR",
     "named": false
   },
   {
@@ -937,11 +1053,27 @@
     "named": false
   },
   {
+    "type": "TIME",
+    "named": false
+  },
+  {
+    "type": "TIME_OF_DAY",
+    "named": false
+  },
+  {
     "type": "TO",
     "named": false
   },
   {
+    "type": "TOD",
+    "named": false
+  },
+  {
     "type": "UNTIL",
+    "named": false
+  },
+  {
+    "type": "VAR",
     "named": false
   },
   {
