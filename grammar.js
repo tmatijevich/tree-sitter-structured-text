@@ -183,11 +183,11 @@ module.exports = grammar({
     
     case_value: $ => commaSep1(choice(
       alias(token(signedInteger), $.integer),
-      $.case_range,
+      $.index_range,
       $.identifier
     )),
     
-    case_range: $ => seq(
+    index_range: $ => seq(
       field('lowerBound', choice(alias(token(signedInteger), $.integer), $.identifier)),
       '..',
       field('upperBound', choice(alias(token(signedInteger), $.integer), $.identifier))
@@ -252,7 +252,7 @@ module.exports = grammar({
     )),
     
     binary_expression: $ => choice(
-      prec.left(5, seq($._expression, '**', $._expression)),
+      prec.left(5, seq($._expression, '**', $._expression)), // Not supported in Automation Studio
       prec.left(4, seq($._expression, '*', $._expression)),
       prec.left(4, seq($._expression, '/', $._expression)),
       prec.left(4, seq($._expression, 'MOD', $._expression)),
@@ -289,6 +289,11 @@ module.exports = grammar({
       /\d{1,2}/
     ),
     
+    repetition_expression: $ => seq(
+      $._expression,
+      '(', $._expression, ')'
+    ),
+    
     /*
       Variables
     */
@@ -308,16 +313,13 @@ module.exports = grammar({
     
     structure_member: $ => seq(token.immediate('.'), choice($.variable, $.call_expression)),
     
-    repetition_expression: $ => seq(
-      $._expression,
-      '(', $._expression, ')'
-    ),
-    
     /*
       Data types
     */
     _data_type: $ => choice(
-      $.basic_data_type
+      $.basic_data_type,
+      alias($.identifier, $.derived_data_type),
+      $.array_type
     ),
     
     basic_data_type: $ => choice(
@@ -333,6 +335,15 @@ module.exports = grammar({
       /W?STRING/,
       'BYTE',
       /D?WORD/
+    ),
+    
+    array_type: $ => seq(
+      'ARRAY',
+      '[',
+      commaSep1($.index_range),
+      ']',
+      'OF',
+      choice($.basic_data_type, alias($.identifier, $.derived_data_type))
     ),
     
     /*

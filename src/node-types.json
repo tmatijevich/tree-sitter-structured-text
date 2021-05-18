@@ -186,6 +186,29 @@
     }
   },
   {
+    "type": "array_type",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "basic_data_type",
+          "named": true
+        },
+        {
+          "type": "derived_data_type",
+          "named": true
+        },
+        {
+          "type": "index_range",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "assignment",
     "named": true,
     "fields": {},
@@ -295,40 +318,6 @@
     }
   },
   {
-    "type": "case_range",
-    "named": true,
-    "fields": {
-      "lowerBound": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "identifier",
-            "named": true
-          },
-          {
-            "type": "integer",
-            "named": true
-          }
-        ]
-      },
-      "upperBound": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "identifier",
-            "named": true
-          },
-          {
-            "type": "integer",
-            "named": true
-          }
-        ]
-      }
-    }
-  },
-  {
     "type": "case_statement",
     "named": true,
     "fields": {
@@ -367,11 +356,11 @@
       "required": true,
       "types": [
         {
-          "type": "case_range",
+          "type": "identifier",
           "named": true
         },
         {
-          "type": "identifier",
+          "type": "index_range",
           "named": true
         },
         {
@@ -401,7 +390,15 @@
       "required": true,
       "types": [
         {
+          "type": "array_type",
+          "named": true
+        },
+        {
           "type": "basic_data_type",
+          "named": true
+        },
+        {
+          "type": "derived_data_type",
           "named": true
         },
         {
@@ -594,6 +591,40 @@
         "types": [
           {
             "type": "_expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "index_range",
+    "named": true,
+    "fields": {
+      "lowerBound": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "integer",
+            "named": true
+          }
+        ]
+      },
+      "upperBound": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "integer",
             "named": true
           }
         ]
@@ -937,6 +968,10 @@
     "named": false
   },
   {
+    "type": "ARRAY",
+    "named": false
+  },
+  {
     "type": "BOOL",
     "named": false
   },
@@ -1106,6 +1141,10 @@
   },
   {
     "type": "date",
+    "named": true
+  },
+  {
+    "type": "derived_data_type",
     "named": true
   },
   {
